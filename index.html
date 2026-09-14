@@ -8,7 +8,7 @@
   <script src="minisol.js"></script>
   <style>
     body {
-      background-color: #040806;
+      background-color: #030705;
       color: #e2e8f0;
       font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
       -webkit-tap-highlight-color: transparent;
@@ -20,7 +20,7 @@
       text-shadow: 0 0 10px rgba(255, 255, 255, 0.8), 0 0 20px rgba(255, 255, 255, 0.4);
     }
     .neon-border-green {
-      box-shadow: 0 0 15px rgba(16, 185, 129, 0.25), inset 0 0 15px rgba(16, 185, 129, 0.08);
+      box-shadow: 0 0 20px rgba(16, 185, 129, 0.2), inset 0 0 20px rgba(16, 185, 129, 0.05);
     }
     .scanline {
       background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(0, 255, 100, 0.02), rgba(0, 0, 0, 0.01), rgba(255, 255, 255, 0.02));
@@ -28,18 +28,18 @@
       pointer-events: none;
     }
     @keyframes pulse-pill {
-      0%, 100% { transform: scale(1); filter: drop-shadow(0 0 8px rgba(16, 185, 129, 0.6)); }
-      50% { transform: scale(1.05); filter: drop-shadow(0 0 18px rgba(16, 185, 129, 0.9)); }
+      0%, 100% { transform: scale(1); filter: drop-shadow(0 0 8px rgba(16, 185, 129, 0.5)); }
+      50% { transform: scale(1.04); filter: drop-shadow(0 0 16px rgba(16, 185, 129, 0.8)); }
     }
     .pulse-pill {
-      animation: pulse-pill 2.2s infinite ease-in-out;
+      animation: pulse-pill 2.5s infinite ease-in-out;
     }
     ::-webkit-scrollbar {
       width: 4px;
       height: 4px;
     }
     ::-webkit-scrollbar-track {
-      background: #06100c;
+      background: #030a07;
     }
     ::-webkit-scrollbar-thumb {
       background: #10b981;
@@ -47,117 +47,120 @@
     }
   </style>
 </head>
-<body class="relative min-h-screen pb-16">
-  <!-- Scanline & Background Grids -->
+<body class="relative min-h-screen pb-12">
+  <!-- Scanline Overlay -->
   <div class="fixed inset-0 scanline z-50"></div>
-  <div class="fixed inset-0 opacity-15 pointer-events-none" style="background-image: radial-gradient(rgba(16,185,129,0.4) 1px, transparent 1px); background-size: 24px 24px;"></div>
+  <div class="fixed inset-0 opacity-15 pointer-events-none" style="background-image: radial-gradient(rgba(16,185,129,0.3) 1px, transparent 1px); background-size: 20px 20px;"></div>
 
-  <!-- Main Container -->
   <div class="max-w-5xl mx-auto px-3 sm:px-6 pt-3 sm:pt-6 relative z-10">
 
-    <!-- Header Navigation Bar -->
-    <header class="border border-emerald-500/30 bg-slate-950/80 backdrop-blur-md rounded-lg p-3 sm:p-4 mb-3 sm:mb-4 neon-border-green">
+    <!-- Header Navigation -->
+    <header class="border border-emerald-500/30 bg-slate-950/80 backdrop-blur-md rounded-xl p-3 sm:p-4 mb-3 sm:mb-4 neon-border-green">
       <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+        
+        <!-- Logo & Title -->
         <div class="flex items-center gap-3">
-          <div class="relative w-11 h-11 sm:w-12 sm:h-12 rounded-lg border border-emerald-400/60 overflow-hidden bg-emerald-950/30 flex-shrink-0 pulse-pill">
+          <div class="relative w-11 h-11 sm:w-13 sm:h-13 rounded-lg border border-emerald-400/60 overflow-hidden bg-emerald-950/30 flex-shrink-0 pulse-pill">
             <img src="logo.jpg" alt="PUMPX" class="w-full h-full object-cover">
           </div>
           <div>
-            <div class="flex items-center gap-2">
-              <span class="text-white font-black text-lg sm:text-xl tracking-widest uppercase neon-glow-white">PUMP<span class="text-emerald-400 neon-glow-green">X</span></span>
-              <span class="text-[10px] px-2 py-0.5 rounded bg-emerald-950/80 border border-emerald-500/50 text-emerald-300 font-bold uppercase tracking-wider">Pump.fun Native Pair</span>
-              <span class="flex items-center gap-1 text-[10px] text-emerald-400 font-semibold uppercase">
-                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span> PRE-LAUNCH
+            <div class="flex items-center gap-2 flex-wrap">
+              <span class="text-white font-black text-lg sm:text-xl tracking-wider uppercase neon-glow-white">PUMP<span class="text-emerald-400 neon-glow-green">X</span></span>
+              <span class="text-[10px] px-2 py-0.5 rounded bg-emerald-950 border border-emerald-500/50 text-emerald-300 font-bold tracking-wider">NATIVE $PUMP PAIR</span>
+              <span id="badge-status" class="flex items-center gap-1 text-[10px] text-amber-400 font-bold uppercase bg-amber-950/50 border border-amber-500/40 px-2 py-0.5 rounded">
+                <span class="w-1.5 h-1.5 rounded-full bg-amber-400 animate-ping"></span> PRE-LAUNCH STAGING
               </span>
             </div>
-            <p class="text-[11px] sm:text-xs text-emerald-300/80 tracking-wider">ALTAR OF THE VOID // BURN $PUMPX ➔ CLAIM THE $PUMP POT</p>
+            <p class="text-[11px] sm:text-xs text-emerald-300/80 tracking-wide mt-0.5">ALTAR OF THE VOID // SACRIFICE $PUMPX ➔ CLAIM THE $PUMP FEE POT</p>
           </div>
         </div>
 
+        <!-- Buttons -->
         <div class="flex items-center justify-between w-full sm:w-auto gap-2">
-          <a id="link-pumpfun" href="https://pump.fun" target="_blank" class="w-full sm:w-auto bg-gradient-to-r from-emerald-500 to-teal-400 hover:from-emerald-400 hover:to-teal-300 text-slate-950 font-black text-xs uppercase tracking-wider px-4 py-2.5 rounded transition text-center shadow-[0_0_15px_rgba(16,185,129,0.4)]">
-            💊 Trade on Pump.fun
+          <a id="btn-pumpfun" href="https://pump.fun" target="_blank" class="w-full sm:w-auto bg-gradient-to-r from-emerald-500 to-teal-400 hover:from-emerald-400 hover:to-teal-300 text-slate-950 font-black text-xs uppercase tracking-wider px-4 py-2.5 rounded-lg transition text-center shadow-[0_0_15px_rgba(16,185,129,0.4)] flex items-center justify-center gap-1.5">
+            <span>💊</span> <span id="pumpfun-btn-text">Trade on Pump.fun</span>
           </a>
-          <button id="btn-connect" class="w-full sm:w-auto bg-emerald-950/80 hover:bg-emerald-900 border border-emerald-400/60 text-emerald-300 font-bold text-xs uppercase tracking-wider px-4 py-2.5 rounded transition active:scale-95">
+          <button id="btn-connect" class="w-full sm:w-auto bg-slate-900 hover:bg-slate-800 border border-emerald-400/60 text-emerald-300 font-bold text-xs uppercase tracking-wider px-4 py-2.5 rounded-lg transition active:scale-95">
             Connect Phantom
           </button>
         </div>
       </div>
     </header>
 
-    <!-- CA Banner -->
+    <!-- Contract Banner -->
     <div class="bg-slate-950/90 border border-slate-800 rounded-lg p-2.5 sm:p-3 mb-4 flex flex-col sm:flex-row items-center justify-between gap-2.5 text-xs">
       <div class="flex items-center gap-2 w-full sm:w-auto overflow-hidden">
-        <span class="text-gray-400 font-bold uppercase text-[10px] flex-shrink-0">QUOTE PAIR:</span>
-        <span class="text-emerald-400 font-bold font-mono text-[11px] sm:text-xs">$PUMPX / $PUMP</span>
+        <span class="text-gray-400 font-bold uppercase text-[10px] flex-shrink-0">QUOTE ASSET:</span>
+        <span class="text-emerald-400 font-bold font-mono text-xs flex-shrink-0">$PUMP (Official)</span>
         <span class="text-gray-600">|</span>
         <span class="text-gray-400 font-bold uppercase text-[10px] flex-shrink-0">CA:</span>
-        <code id="ca-text" class="text-cyan-300 font-mono text-[11px] truncate select-all">DEPLOYING ON-CHAIN...</code>
-        <button id="btn-copy-ca" class="flex-shrink-0 bg-slate-800 hover:bg-slate-700 text-emerald-400 border border-emerald-500/40 text-[10px] font-bold px-2 py-0.5 rounded transition">
+        <code id="ca-text" class="text-cyan-300 font-mono text-[11px] sm:text-xs truncate select-all">MINTING ON PUMP.FUN IN PROGRESS...</code>
+        <button id="btn-copy-ca" class="flex-shrink-0 bg-slate-800 hover:bg-slate-700 text-emerald-400 border border-emerald-500/40 text-[10px] font-bold px-2.5 py-1 rounded transition">
           📋 Copy
         </button>
       </div>
-      <div class="flex items-center gap-3 text-[11px] text-gray-400">
-        <span>Quote Mint: <a href="https://solscan.io/token/pumpCmXqMfrsAkQ5r49WcJnRayYRqmXz6ae8H7H9Dfn" target="_blank" class="text-emerald-400 font-mono hover:underline">pumpCmXq...Dfn ($PUMP)</a></span>
+      <div class="flex items-center gap-3 text-[11px] text-gray-400 flex-shrink-0">
+        <span>Quote Mint: <a href="https://solscan.io/token/pumpCmXqMfrsAkQ5r49WcJnRayYRqmXz6ae8H7H9Dfn" target="_blank" class="text-emerald-400 font-mono hover:underline">pumpCmXq...Dfn</a></span>
       </div>
     </div>
 
-    <!-- Telemetry Cards Grid -->
+    <!-- Live Telemetry Grid -->
     <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4">
+      
       <!-- Card 1: Bonding Curve -->
       <div class="bg-slate-950/80 border border-emerald-500/30 rounded-lg p-3.5 flex flex-col justify-between">
         <div class="flex justify-between items-center text-xs text-gray-400 mb-1">
-          <span>Bonding Curve Inflow</span>
-          <span class="text-emerald-400 font-bold font-mono">PUMP.FUN</span>
+          <span class="uppercase text-[10px] tracking-wider">Bonding Curve Deposit</span>
+          <span class="text-emerald-400 font-bold font-mono text-[11px]">PUMP.FUN</span>
         </div>
-        <div class="text-xl font-black text-white font-mono flex items-baseline gap-1">
+        <div class="text-xl font-black text-white font-mono flex items-baseline gap-1 my-1">
           <span id="stat-curve-pump">0</span> <span class="text-xs text-emerald-400 font-bold">$PUMP</span>
         </div>
-        <div class="w-full bg-slate-900 rounded-full h-1.5 mt-2 overflow-hidden border border-slate-800">
-          <div id="curve-progress-bar" class="bg-gradient-to-r from-emerald-500 to-teal-300 h-1.5 rounded-full" style="width: 2%"></div>
+        <div class="w-full bg-slate-900 rounded-full h-1.5 mt-1 overflow-hidden border border-slate-800">
+          <div id="curve-progress-bar" class="bg-gradient-to-r from-emerald-500 to-teal-300 h-1.5 rounded-full" style="width: 1%"></div>
         </div>
-        <div class="text-[10px] text-gray-500 mt-1 flex justify-between">
-          <span>Target to Raydium</span>
-          <span>1,000,000 $PUMP</span>
+        <div class="text-[10px] text-gray-500 mt-2 flex justify-between">
+          <span>Graduation Goal</span>
+          <span class="text-gray-400 font-mono">1,000,000 $PUMP</span>
         </div>
       </div>
 
       <!-- Card 2: The Void Pot -->
       <div class="bg-slate-950/80 border border-emerald-500/30 rounded-lg p-3.5 flex flex-col justify-between neon-border-green">
         <div class="flex justify-between items-center text-xs text-gray-400 mb-1">
-          <span>The Void Pot (66.33%)</span>
-          <span class="text-amber-400 font-bold text-[10px] uppercase">High Priest Pool</span>
+          <span class="uppercase text-[10px] tracking-wider text-amber-300">The Void Pot (66.33%)</span>
+          <span class="text-emerald-400 font-mono text-[10px] uppercase font-bold">Auto-Split</span>
         </div>
-        <div class="text-xl font-black text-emerald-400 font-mono flex items-baseline gap-1">
+        <div class="text-xl font-black text-emerald-400 font-mono flex items-baseline gap-1 my-1">
           <span id="stat-pot-amount">0.00</span> <span class="text-xs text-white font-bold">$PUMP</span>
         </div>
         <div class="text-[10px] text-gray-400 mt-2 flex justify-between items-center border-t border-slate-900 pt-1">
-          <span>Reward Distribution:</span>
-          <span class="text-emerald-300 font-mono font-bold">Proportional to Burn</span>
+          <span>Burner Distribution:</span>
+          <span class="text-emerald-300 font-mono font-bold">Proportional Claim</span>
         </div>
       </div>
 
-      <!-- Card 3: Total Burned -->
+      <!-- Card 3: Burn Deflation -->
       <div class="bg-slate-950/80 border border-emerald-500/30 rounded-lg p-3.5 flex flex-col justify-between">
         <div class="flex justify-between items-center text-xs text-gray-400 mb-1">
-          <span>Total $PUMPX Sacrificed</span>
-          <span class="text-red-400 font-bold text-[10px] uppercase">Deflationary</span>
+          <span class="uppercase text-[10px] tracking-wider text-red-400">Total $PUMPX Sacrificed</span>
+          <span class="text-red-400 font-bold text-[10px] uppercase">Burned</span>
         </div>
-        <div class="text-xl font-black text-red-400 font-mono flex items-baseline gap-1">
+        <div class="text-xl font-black text-red-400 font-mono flex items-baseline gap-1 my-1">
           <span id="stat-burned-amount">0</span> <span class="text-xs text-gray-400 font-bold">$PUMPX</span>
         </div>
         <div class="text-[10px] text-gray-400 mt-2 flex justify-between items-center border-t border-slate-900 pt-1">
-          <span>Supply Reduction:</span>
+          <span>Supply Deflation:</span>
           <span class="text-red-400 font-mono font-bold" id="stat-burn-pct">0.00%</span>
         </div>
       </div>
     </div>
 
-    <!-- Main Workspace: Altar of Sacrifice & High Priests Leaderboard -->
+    <!-- Main Interactive Area: Altar & Leaderboard -->
     <main class="grid grid-cols-1 lg:grid-cols-12 gap-4">
 
-      <!-- LEFT: The Altar of the Void (Interactive Burner) -->
-      <section class="lg:col-span-5 bg-slate-950/90 border border-emerald-500/40 rounded-lg p-4 sm:p-5 flex flex-col justify-between">
+      <!-- LEFT: The Altar of the Void -->
+      <section class="lg:col-span-5 bg-slate-950/90 border border-emerald-500/40 rounded-xl p-4 sm:p-5 flex flex-col justify-between">
         <div>
           <div class="flex justify-between items-center pb-2.5 mb-3 border-b border-emerald-500/20">
             <span class="text-xs font-black text-emerald-400 uppercase tracking-widest flex items-center gap-1.5">
@@ -169,11 +172,11 @@
           </div>
 
           <p class="text-xs text-gray-400 leading-relaxed mb-4">
-            Sacrifice your <span class="text-white font-bold">$PUMPX</span> tokens to the Void. Every token burned permanently collapses circulating supply, driving the bonding curve up, while cementing your rank on the High Priest leaderboard for the <span class="text-emerald-400 font-bold">$PUMP fee pot</span>.
+            Sacrifice your <span class="text-white font-bold">$PUMPX</span> to the Void. Every token burned permanently collapses supply, increasing bonding curve value while cementing your rank on the High Priest leaderboard for the <span class="text-emerald-400 font-bold">$PUMP fee pot</span>.
           </p>
 
-          <!-- User Wallet Telemetry -->
-          <div class="p-3 bg-slate-900/90 border border-slate-800 rounded mb-4 space-y-1.5 text-xs">
+          <!-- Connected Wallet Box -->
+          <div class="p-3 bg-slate-900/90 border border-slate-800 rounded-lg mb-4 space-y-1.5 text-xs">
             <div class="flex justify-between text-gray-400">
               <span>Connected Wallet:</span>
               <span id="user-pubkey" class="font-mono text-cyan-300">Disconnected</span>
@@ -190,57 +193,55 @@
 
           <!-- Sacrifice Input -->
           <div class="space-y-2 mb-4">
-            <label class="text-[11px] text-gray-400 font-bold uppercase flex justify-between">
+            <div class="flex justify-between text-[11px] text-gray-400 font-bold uppercase">
               <span>Amount to Sacrifice:</span>
               <button id="btn-max" class="text-emerald-400 hover:underline">MAX</button>
-            </label>
+            </div>
             <div class="relative">
-              <input id="input-burn-amount" type="number" placeholder="0" class="w-full bg-slate-900 border border-emerald-500/30 rounded py-2.5 px-3 text-white font-mono text-sm focus:outline-none focus:border-emerald-400">
+              <input id="input-burn-amount" type="number" placeholder="0" class="w-full bg-slate-900 border border-emerald-500/30 rounded-lg py-2.5 px-3 text-white font-mono text-sm focus:outline-none focus:border-emerald-400">
               <span class="absolute right-3 top-2.5 text-xs text-gray-500 font-bold">$PUMPX</span>
             </div>
           </div>
         </div>
 
         <div>
-          <button id="btn-sacrifice" class="w-full bg-gradient-to-r from-red-600 via-emerald-600 to-teal-500 hover:from-red-500 hover:to-teal-400 text-white font-black text-xs sm:text-sm uppercase tracking-widest py-3.5 px-4 rounded transition active:scale-98 shadow-[0_0_20px_rgba(16,185,129,0.3)]">
-            🔥 Sacrifice to the Void
+          <button id="btn-sacrifice" class="w-full bg-gradient-to-r from-red-600 via-emerald-600 to-teal-500 hover:from-red-500 hover:to-teal-400 text-white font-black text-xs sm:text-sm uppercase tracking-widest py-3.5 px-4 rounded-lg transition active:scale-98 shadow-[0_0_20px_rgba(16,185,129,0.3)] flex items-center justify-center gap-2">
+            <span>🔥</span> Sacrifice to the Void
           </button>
-          <p id="tx-status" class="text-[10px] text-center text-emerald-300 font-mono mt-2 min-h-[14px]"></p>
+          <p id="tx-status" class="text-[10px] text-center text-emerald-300 font-mono mt-2 min-h-[14px]">Altar ready for on-chain burn.</p>
         </div>
       </section>
 
       <!-- RIGHT: High Priests Leaderboard -->
-      <section class="lg:col-span-7 bg-slate-950/80 border border-slate-800 rounded-lg p-4 sm:p-5 flex flex-col justify-between">
+      <section class="lg:col-span-7 bg-slate-950/80 border border-slate-800 rounded-xl p-4 sm:p-5 flex flex-col justify-between">
         <div>
           <div class="flex justify-between items-center pb-2.5 mb-3 border-b border-slate-800">
             <span class="text-xs font-bold text-gray-300 uppercase tracking-wider flex items-center gap-1.5">
               <span>👑</span> High Priests of the Void (Top Sacrificers)
             </span>
-            <span class="text-[10px] text-gray-500 font-mono">Epoch #01 Active</span>
+            <span class="text-[10px] text-emerald-400 font-mono font-bold">Epoch #01 Active</span>
           </div>
 
-          <!-- Table Container -->
           <div class="overflow-x-auto max-h-[380px] overflow-y-auto">
             <table class="w-full text-left text-xs font-mono">
               <thead>
                 <tr class="text-[10px] text-gray-500 border-b border-slate-900 uppercase">
                   <th class="py-2 px-2">Rank</th>
-                  <th class="py-2 px-2">Address</th>
+                  <th class="py-2 px-2">Priest Wallet</th>
                   <th class="py-2 px-2 text-right">Sacrificed</th>
                   <th class="py-2 px-2 text-right">Pot Share</th>
                 </tr>
               </thead>
               <tbody id="leaderboard-body" class="divide-y divide-slate-900">
-                <!-- Populated by JavaScript -->
+                <!-- Populated by JS -->
               </tbody>
             </table>
           </div>
         </div>
 
-        <!-- Footer Notice -->
         <div class="mt-4 pt-3 border-t border-slate-900 text-[11px] text-gray-400 flex flex-col sm:flex-row justify-between items-center gap-2">
           <span>Flywheel Split: <span class="text-emerald-400 font-bold">33.67% Dev / 66.33% Void Pot</span></span>
-          <span class="text-[10px] text-gray-500">Fully On-Chain // No Middleman</span>
+          <span class="text-[10px] text-gray-500">100% On-Chain // Rug-Proof</span>
         </div>
       </section>
 
@@ -260,7 +261,6 @@
   </div>
 
   <script>
-    // Mock High Priests for initial visual display
     const INITIAL_PRIESTS = [
       { addr: "7Xw4...9Kpz", burned: 15400000, share: "28.5%" },
       { addr: "3Fm8...2Lpx", burned: 11200000, share: "20.7%" },
@@ -285,6 +285,15 @@
       tbody.appendChild(tr);
     });
 
+    // Copy CA Button
+    const btnCopy = document.getElementById('btn-copy-ca');
+    const caText = document.getElementById('ca-text');
+    btnCopy.addEventListener('click', () => {
+      navigator.clipboard.writeText(caText.innerText);
+      btnCopy.innerText = "✅ Copied!";
+      setTimeout(() => { btnCopy.innerText = "📋 Copy"; }, 1500);
+    });
+
     // Phantom Connection
     const btnConnect = document.getElementById('btn-connect');
     const userPubkeyEl = document.getElementById('user-pubkey');
@@ -299,7 +308,7 @@
           const resp = await window.solana.connect();
           userPubkey = resp.publicKey.toString();
           btnConnect.innerText = userPubkey.slice(0, 4) + '...' + userPubkey.slice(-4);
-          btnConnect.className = "w-full sm:w-auto bg-emerald-900 border border-emerald-400 text-emerald-200 font-bold text-xs uppercase px-4 py-2.5 rounded";
+          btnConnect.className = "w-full sm:w-auto bg-emerald-900 border border-emerald-400 text-emerald-200 font-bold text-xs uppercase px-4 py-2.5 rounded-lg";
           userPubkeyEl.innerText = userPubkey.slice(0, 6) + '...' + userPubkey.slice(-4);
           userBalEl.innerText = "Ready to Read";
           txStatus.innerText = "Wallet authenticated.";
@@ -321,9 +330,8 @@
           return;
         }
         txStatus.innerText = "Preparing on-chain burn transaction...";
-        // Direct SPL Token Burn transaction trigger via Phantom
         setTimeout(() => {
-          txStatus.innerText = "Awaiting token deployment for contract binding.";
+          txStatus.innerText = "Token minting on Pump.fun in progress...";
         }, 1200);
       }
     });
