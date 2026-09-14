@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>PUMPX // Russian Roulette | Chamber of Fate</title>
   <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@solana/web3.js@1.98.0/lib/index.iife.min.js"></script>
   <script src="minisol.js"></script>
   <style>
     * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -104,13 +105,25 @@
           </div>
         </div>
 
-        <!-- Controls (Sound + Wallet) -->
-        <div class="flex items-center justify-between w-full sm:w-auto gap-2">
+        <!-- Controls (Pump.fun + X Post + TG + Sound + Wallet) -->
+        <div class="flex items-center justify-between sm:justify-end w-full sm:w-auto gap-2 flex-wrap">
+          <a href="https://pump.fun/coin/3YhNeHVNPtzm5cyFVxmzddWGJJke4n6D79KWYXPZ9xoF" target="_blank" class="bg-gradient-to-r from-emerald-400 to-teal-300 hover:from-emerald-300 hover:to-teal-200 text-slate-950 font-black text-xs uppercase tracking-wider px-3 py-2 rounded-xl transition shadow-[0_0_15px_rgba(16,185,129,0.4)] flex items-center gap-1.5 active:scale-95">
+            <span>💊</span> <span>Trade on Pump</span>
+          </a>
+
+          <a href="https://x.com/SonyxEth/status/2099632476553380314?s=20" target="_blank" class="bg-slate-900/90 border border-slate-700 hover:border-emerald-400 text-xs text-white font-mono px-3 py-2 rounded-xl transition active:scale-95 flex items-center gap-1.5">
+            <span>𝕏</span> <span class="hidden sm:inline">Post</span>
+          </a>
+
+          <a href="https://t.me/ratchetx" target="_blank" class="bg-slate-900/90 border border-slate-700 hover:border-cyan-400 text-xs text-cyan-400 font-mono px-3 py-2 rounded-xl transition active:scale-95 flex items-center gap-1.5">
+            <span>✈️</span> <span class="hidden sm:inline">TG</span>
+          </a>
+
           <button id="btn-sound" class="p-2 sm:px-3 sm:py-2 rounded-xl bg-slate-900/90 border border-slate-700 hover:border-emerald-400 text-xs text-emerald-400 font-mono transition active:scale-95 flex items-center gap-1">
             <span id="sound-icon">🔊</span> <span class="hidden sm:inline text-[10px] font-bold">SFX</span>
           </button>
           
-          <button id="btn-connect" class="flex-1 sm:flex-initial bg-gradient-to-r from-emerald-500 to-teal-400 hover:from-emerald-400 hover:to-teal-300 text-slate-950 font-black text-xs uppercase tracking-wider px-4 py-2.5 rounded-xl transition shadow-[0_0_15px_rgba(16,185,129,0.3)] active:scale-95 flex items-center justify-center gap-2">
+          <button id="btn-connect" class="bg-slate-900 hover:bg-slate-800 border border-emerald-500/50 text-emerald-300 font-bold text-xs uppercase tracking-wider px-3.5 py-2 rounded-xl transition active:scale-95 flex items-center justify-center gap-1.5">
             <span>⚡</span> <span id="connect-text">Connect Wallet</span>
           </button>
         </div>
@@ -120,12 +133,18 @@
 
     <!-- Live On-Chain Contract Addresses Banner -->
     <div class="bg-slate-950/90 border border-slate-800 rounded-xl p-2.5 sm:p-3 mb-4 flex flex-col sm:flex-row items-center justify-between gap-2.5 text-xs font-mono">
-      <div class="flex items-center gap-2 overflow-hidden w-full sm:w-auto">
-        <span class="text-[10px] text-gray-500 uppercase font-bold flex-shrink-0">PROGRAM ID:</span>
-        <a href="https://solscan.io/account/GUkWcmnUzMPhRBtN1uNbgBSoxuW9T3SL2MT7mRcQbgHH" target="_blank" class="text-emerald-400 font-bold hover:underline truncate">GUkWcmn...bgHH</a>
+      <div class="flex items-center gap-2 overflow-hidden w-full sm:w-auto flex-wrap">
+        <span class="text-[10px] text-emerald-400 font-bold uppercase flex-shrink-0">CA:</span>
+        <code id="ca-text" class="text-cyan-300 font-bold select-all bg-slate-900 px-2 py-0.5 rounded border border-slate-800 text-[11px] truncate">3YhNeHVNPtzm5cyFVxmzddWGJJke4n6D79KWYXPZ9xoF</code>
+        <button id="btn-copy-ca" class="bg-slate-800 hover:bg-slate-700 text-emerald-300 border border-emerald-500/40 text-[10px] font-bold px-2 py-0.5 rounded transition">
+          📋 Copy
+        </button>
         <span class="text-gray-700">|</span>
-        <span class="text-[10px] text-gray-500 uppercase font-bold flex-shrink-0">CHAMBER PDA:</span>
-        <a href="https://solscan.io/account/BkV8p5YMkNaJcHF88QygX4pXhxDrkiqG2uDctNToNKVt" target="_blank" class="text-cyan-300 font-bold hover:underline truncate">BkV8p5...NKVt</a>
+        <span class="text-[10px] text-gray-500 uppercase font-bold flex-shrink-0">PROGRAM:</span>
+        <a href="https://solscan.io/account/GUkWcmnUzMPhRBtN1uNbgBSoxuW9T3SL2MT7mRcQbgHH" target="_blank" class="text-gray-400 hover:text-emerald-400 hover:underline truncate">GUkWcmn...bgHH</a>
+        <span class="text-gray-700">|</span>
+        <span class="text-[10px] text-gray-500 uppercase font-bold flex-shrink-0">PDA:</span>
+        <a href="https://solscan.io/account/BkV8p5YMkNaJcHF88QygX4pXhxDrkiqG2uDctNToNKVt" target="_blank" class="text-cyan-400 hover:underline truncate">BkV8p5...NKVt</a>
       </div>
       <div class="flex items-center gap-2 text-[10px] text-gray-400 flex-shrink-0">
         <span class="text-emerald-400 font-bold">⚡ 33.67% Architect</span>
@@ -339,10 +358,12 @@
     <!-- Footer -->
     <footer class="mt-6 pt-4 border-t border-slate-800/80 flex flex-col sm:flex-row justify-between items-center text-[11px] text-gray-500 gap-2">
       <div>PUMPX // Russian Roulette on Solana Mainnet</div>
-      <div class="flex items-center gap-4">
+      <div class="flex items-center gap-4 flex-wrap justify-center">
         <a href="https://pumpx.ratchetx.xyz" class="text-emerald-400 hover:underline">Website</a>
-        <a href="https://x.com/SonyxEth" target="_blank" class="text-white hover:underline">X (Twitter)</a>
+        <a href="https://x.com/SonyxEth/status/2099632476553380314?s=20" target="_blank" class="text-white hover:underline">𝕏 Announcement</a>
+        <a href="https://x.com/SonyxEth" target="_blank" class="text-gray-400 hover:underline">@SonyxEth</a>
         <a href="https://t.me/ratchetx" target="_blank" class="text-cyan-400 hover:underline">Telegram</a>
+        <a href="https://pump.fun/coin/3YhNeHVNPtzm5cyFVxmzddWGJJke4n6D79KWYXPZ9xoF" target="_blank" class="text-emerald-400 hover:underline">Pump.fun</a>
       </div>
     </footer>
 
@@ -632,22 +653,59 @@
     animateCylinder();
 
     // ========================================================================
-    // 3. GAME STATE & SIMULATOR LOGIC
+    // 3. GAME STATE & ON-CHAIN DATA
     // ========================================================================
+    const PROGRAM_ID_STR = "GUkWcmnUzMPhRBtN1uNbgBSoxuW9T3SL2MT7mRcQbgHH";
+    const CHAMBER_PDA_STR = "BkV8p5YMkNaJcHF88QygX4pXhxDrkiqG2uDctNToNKVt";
+    const ARCHITECT_STR = "HXFDaHyZ3i477z1BakiTWZg9UQN8rcreruuv9ifC1HvM";
+    const PUMP_MINT_STR = "3YhNeHVNPtzm5cyFVxmzddWGJJke4n6D79KWYXPZ9xoF";
+
+    const RPC_ENDPOINTS = [
+      "https://api.mainnet-beta.solana.com",
+      "https://solana-mainnet.rpc.extrnode.com",
+      "https://rpc.ankr.com/solana"
+    ];
+    let rpcIdx = 0;
+
+    async function rpcCall(method, params) {
+      for (let i = 0; i < RPC_ENDPOINTS.length; i++) {
+        const ep = RPC_ENDPOINTS[(rpcIdx + i) % RPC_ENDPOINTS.length];
+        try {
+          const res = await fetch(ep, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ jsonrpc: '2.0', id: Date.now(), method, params })
+          });
+          const data = await res.json();
+          if (data.result !== undefined) {
+            rpcIdx = (rpcIdx + i) % RPC_ENDPOINTS.length;
+            return data.result;
+          }
+        } catch (e) {
+          // continue fallback
+        }
+      }
+      throw new Error("All RPC endpoints unreachable");
+    }
+
     let gameState = {
       roundId: 1,
       pullsInRound: 0,
-      potSol: 0.045,
-      potPump: 18450,
+      potSol: 0,
+      potPump: 0,
       survivorAddr: "None",
+      survivorPubkey: null,
       totalBangs: 0,
+      totalSurvived: 0,
       countdownSecs: 300,
+      deadline: 0,
     };
 
     function updateHUD() {
       document.getElementById('stat-round-id').innerText = gameState.roundId;
-      document.getElementById('stat-pot-sol').innerText = gameState.potSol.toFixed(3);
-      document.getElementById('stat-pot-pump').innerText = gameState.potPump.toLocaleString();
+      document.getElementById('stat-pot-sol').innerText = gameState.potSol.toFixed(4);
+      const estPump = Math.round(gameState.potSol * 250000);
+      document.getElementById('stat-pot-pump').innerText = estPump.toLocaleString();
       document.getElementById('stat-survivor-addr').innerText = gameState.survivorAddr;
       document.getElementById('stat-pulls-count').innerText = gameState.pullsInRound;
       document.getElementById('stat-total-bangs').innerText = gameState.totalBangs;
@@ -655,12 +713,28 @@
 
     // Countdown Timer
     setInterval(() => {
-      if (gameState.countdownSecs > 0 && gameState.survivorAddr !== "None") {
+      if (gameState.countdownSecs > 0 && gameState.survivorPubkey) {
         gameState.countdownSecs--;
         const mins = String(Math.floor(gameState.countdownSecs / 60)).padStart(2, '0');
         const secs = String(gameState.countdownSecs % 60).padStart(2, '0');
         document.getElementById('stat-countdown').innerText = `${mins}:${secs}`;
         document.getElementById('countdown-bar').style.width = `${(gameState.countdownSecs / 300) * 100}%`;
+        document.getElementById('clock-status-badge').innerText = 'ACTIVE';
+        document.getElementById('clock-status-badge').className = 'text-emerald-400 font-mono text-[9px] font-bold';
+      } else if (gameState.survivorPubkey && gameState.countdownSecs === 0) {
+        document.getElementById('stat-countdown').innerText = 'EXPIRED';
+        document.getElementById('countdown-bar').style.width = '0%';
+        document.getElementById('clock-status-badge').innerText = 'CLAIMABLE';
+        document.getElementById('clock-status-badge').className = 'text-amber-400 font-mono text-[9px] font-bold animate-pulse';
+        document.getElementById('btn-settle').classList.remove('hidden');
+        document.getElementById('btn-settle').classList.add('flex');
+      } else {
+        document.getElementById('stat-countdown').innerText = '05:00';
+        document.getElementById('countdown-bar').style.width = '100%';
+        document.getElementById('clock-status-badge').innerText = 'READY';
+        document.getElementById('clock-status-badge').className = 'text-gray-400 font-mono text-[9px] font-bold';
+        document.getElementById('btn-settle').classList.add('hidden');
+        document.getElementById('btn-settle').classList.remove('flex');
       }
     }, 1000);
 
@@ -672,6 +746,54 @@
       log.insertBefore(row, log.firstChild);
     }
 
+    async function fetchOnChainState() {
+      try {
+        const acc = await rpcCall('getAccountInfo', [CHAMBER_PDA_STR, { encoding: 'base64' }]);
+        if (!acc || !acc.value) return;
+
+        const binary = atob(acc.value.data[0]);
+        const bytes = new Uint8Array(binary.length);
+        for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+        const view = new DataView(bytes.buffer);
+
+        const roundId = Number(view.getBigUint64(0, true));
+        const pullsInRound = Number(view.getBigUint64(8, true));
+        const entryFee = Number(view.getBigUint64(16, true));
+        const deadline = Number(view.getBigInt64(24, true));
+
+        const survivorBytes = bytes.subarray(32, 64);
+        const isZero = survivorBytes.every(b => b === 0);
+        const survivorPubkey = isZero ? null : MiniSol.b58encode(survivorBytes);
+
+        const rentFloor = Number(view.getBigUint64(64, true));
+        const roundStarted = Number(view.getBigInt64(72, true));
+        const totalSurvived = Number(view.getBigUint64(80, true));
+        const totalBangs = Number(view.getBigUint64(88, true));
+        const lastOutcome = bytes[96];
+        const lastChamber = bytes[97];
+
+        const potLamports = Math.max(0, acc.value.lamports - rentFloor);
+        const potSol = potLamports / 1e9;
+
+        gameState.roundId = roundId;
+        gameState.pullsInRound = pullsInRound;
+        gameState.potSol = potSol;
+        gameState.survivorAddr = survivorPubkey ? `${survivorPubkey.slice(0, 4)}...${survivorPubkey.slice(-4)}` : "None";
+        gameState.survivorPubkey = survivorPubkey;
+        gameState.totalBangs = totalBangs;
+        gameState.totalSurvived = totalSurvived;
+        gameState.deadline = deadline;
+
+        const now = Math.floor(Date.now() / 1000);
+        gameState.countdownSecs = Math.max(0, deadline - now);
+
+        updateHUD();
+      } catch (err) {
+        console.warn("fetchOnChainState:", err.message);
+      }
+    }
+
+    // Simulation (for zero-cost demo / screen recordings)
     function executePull(isSimulation = true) {
       if (isSpinning) return;
       initAudio();
@@ -690,14 +812,14 @@
           gameState.roundId++;
           gameState.pullsInRound = 0;
           gameState.survivorAddr = "None";
+          gameState.survivorPubkey = null;
           gameState.potSol = 0.005;
-          gameState.potPump = 2500;
           gameState.countdownSecs = 300;
         } else {
           gameState.pullsInRound++;
           gameState.potSol += 0.005 * 0.6633;
-          gameState.potPump += 2500;
-          gameState.survivorAddr = "Phantom_User_" + Math.random().toString(36).substring(2, 6).toUpperCase();
+          gameState.survivorAddr = "Sim_User_" + Math.random().toString(36).substring(2, 6).toUpperCase();
+          gameState.survivorPubkey = "SimKey";
           gameState.countdownSecs = 300;
           addLogEntry(`Round #${gameState.roundId} | Pull #${gameState.pullsInRound} | SAFE 🛡️ New Survivor: ${gameState.survivorAddr}`, 'safe');
         }
@@ -705,30 +827,198 @@
       }, 2500);
     }
 
-    document.getElementById('btn-pull').addEventListener('click', () => executePull(false));
-    document.getElementById('btn-pull-mobile').addEventListener('click', () => executePull(false));
-    document.getElementById('btn-test-pull').addEventListener('click', () => executePull(true));
+    // Real On-Chain Pull Trigger
+    async function executeOnChainPull() {
+      if (isSpinning) return;
+      initAudio();
 
+      const provider = window.solana || (window.solflare && window.solflare.isSolflare ? window.solflare : null);
+      if (!provider) {
+        alert("Solana wallet extension not detected. Use 'Simulate Spin' for video testing, or open in a Web3 browser (Phantom/Solflare)!");
+        return;
+      }
+
+      if (!userWallet) {
+        try {
+          const resp = await provider.connect();
+          userWallet = (resp.publicKey || provider.publicKey).toString();
+          connectText.innerText = userWallet.slice(0, 4) + '..' + userWallet.slice(-4);
+          btnConnect.className = "bg-emerald-950 border border-emerald-400 text-emerald-200 font-bold text-xs uppercase px-3.5 py-2 rounded-xl";
+          addLogEntry(`Wallet connected: ${userWallet.slice(0, 6)}...${userWallet.slice(-4)}`, 'info');
+        } catch (e) {
+          alert("Wallet connection cancelled: " + (e.message || e));
+          return;
+        }
+      }
+
+      const btnPullText = document.getElementById('btn-pull-text');
+      const origBtnText = btnPullText.innerText;
+      btnPullText.innerText = "CONFIRM IN WALLET...";
+      document.getElementById('action-status-msg').innerText = 'Please sign the 0.005 SOL pull trigger in your wallet...';
+
+      try {
+        if (typeof solanaWeb3 === 'undefined') {
+          throw new Error("Solana Web3 runtime not ready. Please refresh the page.");
+        }
+
+        const { blockhash } = await rpcCall('getLatestBlockhash', [{ commitment: 'confirmed' }]);
+
+        const payerPubkey = new solanaWeb3.PublicKey(userWallet);
+        const programPubkey = new solanaWeb3.PublicKey(PROGRAM_ID_STR);
+        const chamberPubkey = new solanaWeb3.PublicKey(CHAMBER_PDA_STR);
+        const architectPubkey = new solanaWeb3.PublicKey(ARCHITECT_STR);
+        const sysPubkey = solanaWeb3.SystemProgram.programId;
+
+        const keys = [
+          { pubkey: payerPubkey, isSigner: true, isWritable: true },
+          { pubkey: chamberPubkey, isSigner: false, isWritable: true },
+          { pubkey: architectPubkey, isSigner: false, isWritable: true },
+          { pubkey: payerPubkey, isSigner: false, isWritable: true },
+          { pubkey: sysPubkey, isSigner: false, isWritable: false },
+        ];
+
+        // If there is an existing survivor, pass them as the 6th account for settlement/bang
+        if (gameState.survivorPubkey && gameState.survivorPubkey !== "SimKey") {
+          keys.push({
+            pubkey: new solanaWeb3.PublicKey(gameState.survivorPubkey),
+            isSigner: false,
+            isWritable: true,
+          });
+        }
+
+        const ix = new solanaWeb3.TransactionInstruction({
+          programId: programPubkey,
+          keys: keys,
+          data: new Uint8Array([1]), // opcode 1: pull_trigger
+        });
+
+        const tx = new solanaWeb3.Transaction().add(ix);
+        tx.recentBlockhash = blockhash;
+        tx.feePayer = payerPubkey;
+
+        const signed = await provider.signAndSendTransaction(tx);
+        const sig = signed.signature || signed;
+
+        btnPullText.innerText = "PULLING TRIGGER...";
+        document.getElementById('action-status-msg').innerHTML = `Tx Broadcasted: <a href="https://solscan.io/tx/${sig}" target="_blank" class="underline text-cyan-300 font-mono">${sig.slice(0, 8)}...</a> Resolving entropy...`;
+        addLogEntry(`Tx broadcasted: <a href="https://solscan.io/tx/${sig}" target="_blank" class="underline text-cyan-300">${sig.slice(0, 8)}...</a>`, 'info');
+
+        // Spin animation
+        const visualRoll = Math.floor(Math.random() * 6);
+        spinCylinderTo(visualRoll, 'safe');
+
+        // Poll confirmation
+        let confirmed = false;
+        for (let i = 0; i < 30; i++) {
+          await new Promise(r => setTimeout(r, 1500));
+          try {
+            const status = await rpcCall('getSignatureStatuses', [[sig]]);
+            if (status && status.value && status.value[0]) {
+              const st = status.value[0];
+              if (st.confirmationStatus === 'confirmed' || st.confirmationStatus === 'finalized') {
+                confirmed = true;
+                if (st.err) {
+                  addLogEntry(`Transaction failed on-chain: ${JSON.stringify(st.err)}`, 'bang');
+                  document.getElementById('action-status-msg').innerText = 'Transaction reverted on-chain.';
+                } else {
+                  addLogEntry(`Tx Confirmed! <a href="https://solscan.io/tx/${sig}" target="_blank" class="text-emerald-400 underline font-mono">View on Solscan</a>`, 'safe');
+                }
+                break;
+              }
+            }
+          } catch (e) {}
+        }
+
+        await fetchOnChainState();
+        btnPullText.innerText = origBtnText;
+      } catch (err) {
+        console.error("On-chain pull error:", err);
+        document.getElementById('action-status-msg').innerText = 'Cancelled or failed: ' + (err.message || err);
+        btnPullText.innerText = origBtnText;
+      }
+    }
+
+    // Settle expired pot (1% cranker tip)
+    async function executeSettle() {
+      const provider = window.solana || (window.solflare && window.solflare.isSolflare ? window.solflare : null);
+      if (!provider || !userWallet || !gameState.survivorPubkey) return;
+
+      try {
+        const { blockhash } = await rpcCall('getLatestBlockhash', [{ commitment: 'confirmed' }]);
+        const crankerPubkey = new solanaWeb3.PublicKey(userWallet);
+        const programPubkey = new solanaWeb3.PublicKey(PROGRAM_ID_STR);
+        const chamberPubkey = new solanaWeb3.PublicKey(CHAMBER_PDA_STR);
+        const survivorPubkey = new solanaWeb3.PublicKey(gameState.survivorPubkey);
+
+        const ix = new solanaWeb3.TransactionInstruction({
+          programId: programPubkey,
+          keys: [
+            { pubkey: crankerPubkey, isSigner: true, isWritable: true },
+            { pubkey: chamberPubkey, isSigner: false, isWritable: true },
+            { pubkey: survivorPubkey, isSigner: false, isWritable: true },
+          ],
+          data: new Uint8Array([2]), // opcode 2: settle
+        });
+
+        const tx = new solanaWeb3.Transaction().add(ix);
+        tx.recentBlockhash = blockhash;
+        tx.feePayer = crankerPubkey;
+
+        const signed = await provider.signAndSendTransaction(tx);
+        const sig = signed.signature || signed;
+        addLogEntry(`Settle crank tx sent: <a href="https://solscan.io/tx/${sig}" target="_blank" class="underline text-amber-300 font-mono">${sig.slice(0, 8)}...</a>`, 'safe');
+        await fetchOnChainState();
+      } catch (err) {
+        alert("Settle error: " + (err.message || err));
+      }
+    }
+
+    document.getElementById('btn-pull').addEventListener('click', executeOnChainPull);
+    document.getElementById('btn-pull-mobile').addEventListener('click', executeOnChainPull);
+    document.getElementById('btn-test-pull').addEventListener('click', () => executePull(true));
+    document.getElementById('btn-settle').addEventListener('click', executeSettle);
+
+    // Copy CA Button
+    const btnCopyCa = document.getElementById('btn-copy-ca');
+    if (btnCopyCa) {
+      btnCopyCa.addEventListener('click', async () => {
+        try {
+          await navigator.clipboard.writeText('3YhNeHVNPtzm5cyFVxmzddWGJJke4n6D79KWYXPZ9xoF');
+          const orig = btnCopyCa.innerHTML;
+          btnCopyCa.innerHTML = '✅ Copied!';
+          setTimeout(() => { btnCopyCa.innerHTML = orig; }, 2000);
+        } catch (e) {
+          console.warn("Copy error:", e);
+        }
+      });
+    }
+
+    // Wallet Connect Button
     const btnConnect = document.getElementById('btn-connect');
     const connectText = document.getElementById('connect-text');
     let userWallet = null;
 
     btnConnect.addEventListener('click', async () => {
       initAudio();
-      if (window.solana && window.solana.isPhantom) {
+      const provider = window.solana || (window.solflare && window.solflare.isSolflare ? window.solflare : null);
+      if (provider) {
         try {
-          const resp = await window.solana.connect();
-          userWallet = resp.publicKey.toString();
+          const resp = await provider.connect();
+          userWallet = (resp.publicKey || provider.publicKey).toString();
           connectText.innerText = userWallet.slice(0, 4) + '..' + userWallet.slice(-4);
-          btnConnect.className = "flex-1 sm:flex-initial bg-emerald-950 border border-emerald-400 text-emerald-200 font-bold text-xs uppercase px-4 py-2.5 rounded-xl";
+          btnConnect.className = "bg-emerald-950 border border-emerald-400 text-emerald-200 font-bold text-xs uppercase px-3.5 py-2 rounded-xl";
           addLogEntry(`Wallet connected: ${userWallet.slice(0, 6)}...${userWallet.slice(-4)}`, 'info');
         } catch (err) {
           console.error(err);
         }
       } else {
-        alert("Phantom Wallet extension not found. You can still use 'Simulate Spin' for video testing!");
+        alert("Solana wallet extension (Phantom/Solflare) not found. Use 'Simulate Spin' for video testing!");
       }
     });
+
+    // Initial Fetch & Regular Polling
+    fetchOnChainState();
+    setInterval(fetchOnChainState, 6000);
 
     updateHUD();
   </script>
