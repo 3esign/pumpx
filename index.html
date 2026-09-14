@@ -661,31 +661,38 @@
     const PUMP_MINT_STR = "3YhNeHVNPtzm5cyFVxmzddWGJJke4n6D79KWYXPZ9xoF";
 
     const RPC_ENDPOINTS = [
-      "https://api.mainnet-beta.solana.com",
-      "https://solana-mainnet.rpc.extrnode.com",
-      "https://rpc.ankr.com/solana"
+      "https://solana-rpc.publicnode.com",
+      "https://api.tatum.io/v3/blockchain/node/solana-mainnet"
     ];
     let rpcIdx = 0;
 
     async function rpcCall(method, params) {
+      let lastErr = null;
       for (let i = 0; i < RPC_ENDPOINTS.length; i++) {
         const ep = RPC_ENDPOINTS[(rpcIdx + i) % RPC_ENDPOINTS.length];
         try {
           const res = await fetch(ep, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ jsonrpc: '2.0', id: Date.now(), method, params })
+            body: JSON.stringify({ jsonrpc: '2.0', id: Date.now(), method, params: params || [] })
           });
+          if (!res.ok) {
+            lastErr = new Error(`HTTP ${res.status}`);
+            continue;
+          }
           const data = await res.json();
-          if (data.result !== undefined) {
+          if (data && data.result !== undefined) {
             rpcIdx = (rpcIdx + i) % RPC_ENDPOINTS.length;
             return data.result;
           }
+          if (data && data.error) {
+            lastErr = new Error(data.error.message || JSON.stringify(data.error));
+          }
         } catch (e) {
-          // continue fallback
+          lastErr = e;
         }
       }
-      throw new Error("All RPC endpoints unreachable");
+      throw lastErr || new Error("All RPC endpoints unreachable");
     }
 
     let gameState = {
@@ -861,7 +868,9 @@
           throw new Error("Solana Web3 runtime not ready. Please refresh the page.");
         }
 
-        const { blockhash } = await rpcCall('getLatestBlockhash', [{ commitment: 'confirmed' }]);
+        const blockhashRes = await rpcCall('getLatestBlockhash', [{ commitment: 'confirmed' }]);
+        const blockhash = (blockhashRes && blockhashRes.value) ? blockhashRes.value.blockhash : (blockhashRes ? blockhashRes.blockhash : null);
+        if (!blockhash) throw new Error("Could not retrieve latest blockhash from Solana network");
 
         const payerPubkey = new solanaWeb3.PublicKey(userWallet);
         const programPubkey = new solanaWeb3.PublicKey(PROGRAM_ID_STR);
@@ -912,7 +921,7 @@
         for (let i = 0; i < 30; i++) {
           await new Promise(r => setTimeout(r, 1500));
           try {
-            const status = await rpcCall('getSignatureStatuses', [[sig]]);
+            const status = await rpcCall('getSignatureStatuses', [[sig], { searchTransactionHistory: true }]);
             if (status && status.value && status.value[0]) {
               const st = status.value[0];
               if (st.confirmationStatus === 'confirmed' || st.confirmationStatus === 'finalized') {
@@ -944,7 +953,10 @@
       if (!provider || !userWallet || !gameState.survivorPubkey) return;
 
       try {
-        const { blockhash } = await rpcCall('getLatestBlockhash', [{ commitment: 'confirmed' }]);
+        const blockhashRes = await rpcCall('getLatestBlockhash', [{ commitment: 'confirmed' }]);
+        const blockhash = (blockhashRes && blockhashRes.value) ? blockhashRes.value.blockhash : (blockhashRes ? blockhashRes.blockhash : null);
+        if (!blockhash) throw new Error("Could not retrieve latest blockhash from Solana network");
+
         const crankerPubkey = new solanaWeb3.PublicKey(userWallet);
         const programPubkey = new solanaWeb3.PublicKey(PROGRAM_ID_STR);
         const chamberPubkey = new solanaWeb3.PublicKey(CHAMBER_PDA_STR);
