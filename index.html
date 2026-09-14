@@ -2,364 +2,719 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>PUMPX // Altar of the Void | Native $PUMP Pair</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>PUMPX // Russian Roulette | Chamber of Fate</title>
   <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
   <script src="minisol.js"></script>
   <style>
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
     body {
       background-color: #030705;
       color: #e2e8f0;
       font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
-      -webkit-tap-highlight-color: transparent;
+      min-height: 100vh;
+      overflow-x: hidden;
     }
     .neon-glow-green {
-      text-shadow: 0 0 10px rgba(16, 185, 129, 0.7), 0 0 20px rgba(16, 185, 129, 0.4);
+      text-shadow: 0 0 10px rgba(16, 185, 129, 0.7), 0 0 25px rgba(16, 185, 129, 0.4);
     }
-    .neon-glow-white {
-      text-shadow: 0 0 10px rgba(255, 255, 255, 0.8), 0 0 20px rgba(255, 255, 255, 0.4);
+    .neon-glow-red {
+      text-shadow: 0 0 10px rgba(239, 68, 68, 0.8), 0 0 25px rgba(239, 68, 68, 0.5);
     }
     .neon-border-green {
-      box-shadow: 0 0 20px rgba(16, 185, 129, 0.2), inset 0 0 20px rgba(16, 185, 129, 0.05);
+      box-shadow: 0 0 25px rgba(16, 185, 129, 0.2), inset 0 0 15px rgba(16, 185, 129, 0.05);
     }
     .scanline {
-      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(0, 255, 100, 0.02), rgba(0, 0, 0, 0.01), rgba(255, 255, 255, 0.02));
+      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.3) 50%), linear-gradient(90deg, rgba(0, 255, 100, 0.015), rgba(0, 0, 0, 0.01), rgba(255, 255, 255, 0.015));
       background-size: 100% 3px, 6px 100%;
       pointer-events: none;
     }
-    @keyframes pulse-pill {
-      0%, 100% { transform: scale(1); filter: drop-shadow(0 0 8px rgba(16, 185, 129, 0.5)); }
-      50% { transform: scale(1.04); filter: drop-shadow(0 0 16px rgba(16, 185, 129, 0.8)); }
+    @keyframes screen-shake {
+      0%, 100% { transform: translate(0, 0) rotate(0deg); }
+      10% { transform: translate(-8px, -6px) rotate(-1deg); }
+      20% { transform: translate(7px, 5px) rotate(1.5deg); }
+      30% { transform: translate(-6px, 7px) rotate(-1deg); }
+      40% { transform: translate(5px, -4px) rotate(0.5deg); }
+      50% { transform: translate(-3px, 3px) rotate(-0.5deg); }
+      70% { transform: translate(2px, -2px) rotate(0deg); }
     }
-    .pulse-pill {
-      animation: pulse-pill 2.5s infinite ease-in-out;
+    .shake {
+      animation: screen-shake 0.55s cubic-bezier(.36,.07,.19,.97) both;
     }
-    ::-webkit-scrollbar {
-      width: 4px;
-      height: 4px;
+    @keyframes flash-red {
+      0% { background-color: rgba(239, 68, 68, 0.55); }
+      100% { background-color: transparent; }
     }
-    ::-webkit-scrollbar-track {
-      background: #030a07;
+    .flash-red-bg {
+      animation: flash-red 0.6s ease-out forwards;
     }
-    ::-webkit-scrollbar-thumb {
-      background: #10b981;
-      border-radius: 2px;
+    @keyframes flash-green {
+      0% { background-color: rgba(16, 185, 129, 0.4); }
+      100% { background-color: transparent; }
     }
+    .flash-green-bg {
+      animation: flash-green 0.5s ease-out forwards;
+    }
+    @keyframes pulse-ring {
+      0% { transform: scale(0.95); opacity: 0.8; }
+      50% { transform: scale(1.05); opacity: 0.3; }
+      100% { transform: scale(0.95); opacity: 0.8; }
+    }
+    .pulse-ring {
+      animation: pulse-ring 2s infinite ease-in-out;
+    }
+    ::-webkit-scrollbar { width: 4px; height: 4px; }
+    ::-webkit-scrollbar-track { background: #030705; }
+    ::-webkit-scrollbar-thumb { background: #10b981; border-radius: 2px; }
   </style>
 </head>
-<body class="relative min-h-screen pb-12">
-  <!-- Scanline Overlay -->
-  <div class="fixed inset-0 scanline z-50"></div>
-  <div class="fixed inset-0 opacity-15 pointer-events-none" style="background-image: radial-gradient(rgba(16,185,129,0.3) 1px, transparent 1px); background-size: 20px 20px;"></div>
+<body class="relative pb-24 md:pb-12 text-slate-200 selection:bg-emerald-500 selection:text-slate-950">
 
-  <div class="max-w-5xl mx-auto px-3 sm:px-6 pt-3 sm:pt-6 relative z-10">
+  <!-- Scanlines & Flash Overlays -->
+  <div id="flash-overlay" class="fixed inset-0 pointer-events-none z-50"></div>
+  <div class="fixed inset-0 scanline z-40"></div>
+  <div class="fixed inset-0 opacity-20 pointer-events-none" style="background-image: radial-gradient(rgba(16,185,129,0.35) 1px, transparent 1px); background-size: 24px 24px;"></div>
 
-    <!-- Header Navigation -->
-    <header class="border border-emerald-500/30 bg-slate-950/80 backdrop-blur-md rounded-xl p-3 sm:p-4 mb-3 sm:mb-4 neon-border-green">
+  <div id="main-container" class="max-w-4xl mx-auto px-3 sm:px-6 pt-3 sm:pt-6 relative z-10">
+
+    <!-- Top Navigation -->
+    <header class="border border-emerald-500/30 bg-slate-950/85 backdrop-blur-md rounded-2xl p-3 sm:p-4 mb-4 neon-border-green">
       <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
         
         <!-- Logo & Title -->
         <div class="flex items-center gap-3">
-          <div class="relative w-11 h-11 sm:w-13 sm:h-13 rounded-lg border border-emerald-400/60 overflow-hidden bg-emerald-950/30 flex-shrink-0 pulse-pill">
+          <div class="relative w-12 h-12 rounded-xl border-2 border-emerald-400/80 overflow-hidden bg-emerald-950/40 flex-shrink-0 shadow-[0_0_15px_rgba(16,185,129,0.4)]">
             <img src="logo.jpg" alt="PUMPX" class="w-full h-full object-cover">
           </div>
           <div>
             <div class="flex items-center gap-2 flex-wrap">
-              <span class="text-white font-black text-lg sm:text-xl tracking-wider uppercase neon-glow-white">PUMP<span class="text-emerald-400 neon-glow-green">X</span></span>
-              <span class="text-[10px] px-2 py-0.5 rounded bg-emerald-950 border border-emerald-500/50 text-emerald-300 font-bold tracking-wider">NATIVE $PUMP PAIR</span>
-              <span id="badge-status" class="flex items-center gap-1 text-[10px] text-amber-400 font-bold uppercase bg-amber-950/50 border border-amber-500/40 px-2 py-0.5 rounded">
-                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span> LIVE ON PUMP.FUN
+              <h1 class="text-white font-black text-lg sm:text-xl tracking-wider uppercase neon-glow-white">
+                PUMP<span class="text-emerald-400 neon-glow-green">X</span>
+              </h1>
+              <span class="text-[9px] px-2 py-0.5 rounded-full bg-emerald-950 border border-emerald-500/50 text-emerald-300 font-bold tracking-wider uppercase">
+                Chamber Roulette
+              </span>
+              <span class="text-[9px] px-2 py-0.5 rounded-full bg-amber-950/70 border border-amber-500/50 text-amber-300 font-bold tracking-wider uppercase flex items-center gap-1">
+                <span class="w-1.5 h-1.5 rounded-full bg-amber-400 animate-ping"></span> 100% On-Chain
               </span>
             </div>
-            <p class="text-[11px] sm:text-xs text-emerald-300/80 tracking-wide mt-0.5">ALTAR OF THE VOID // SACRIFICE $PUMPX ➔ CLAIM THE $PUMP FEE POT</p>
+            <p class="text-[10px] sm:text-xs text-emerald-300/80 tracking-wide mt-0.5">
+              6 CHAMBERS // 1 BULLET // SURVIVOR TAKES THE JACKPOT
+            </p>
           </div>
         </div>
 
-        <!-- Buttons -->
+        <!-- Controls (Sound + Wallet) -->
         <div class="flex items-center justify-between w-full sm:w-auto gap-2">
-          <a id="btn-pumpfun" href="https://pump.fun/coin/2f4juqNfRY5eh93YUJHofPqoFmjjLPzB7Zy7Mx2Fb1t7" target="_blank" class="w-full sm:w-auto bg-gradient-to-r from-emerald-500 to-teal-400 hover:from-emerald-400 hover:to-teal-300 text-slate-950 font-black text-xs uppercase tracking-wider px-4 py-2.5 rounded-lg transition text-center shadow-[0_0_15px_rgba(16,185,129,0.4)] flex items-center justify-center gap-1.5">
-            <span>💊</span> <span id="pumpfun-btn-text">Trade on Pump.fun</span>
-          </a>
-          <button id="btn-connect" class="w-full sm:w-auto bg-slate-900 hover:bg-slate-800 border border-emerald-400/60 text-emerald-300 font-bold text-xs uppercase tracking-wider px-4 py-2.5 rounded-lg transition active:scale-95">
-            Connect Phantom
+          <button id="btn-sound" class="p-2 sm:px-3 sm:py-2 rounded-xl bg-slate-900/90 border border-slate-700 hover:border-emerald-400 text-xs text-emerald-400 font-mono transition active:scale-95 flex items-center gap-1">
+            <span id="sound-icon">🔊</span> <span class="hidden sm:inline text-[10px] font-bold">SFX</span>
+          </button>
+          
+          <button id="btn-connect" class="flex-1 sm:flex-initial bg-gradient-to-r from-emerald-500 to-teal-400 hover:from-emerald-400 hover:to-teal-300 text-slate-950 font-black text-xs uppercase tracking-wider px-4 py-2.5 rounded-xl transition shadow-[0_0_15px_rgba(16,185,129,0.3)] active:scale-95 flex items-center justify-center gap-2">
+            <span>⚡</span> <span id="connect-text">Connect Wallet</span>
           </button>
         </div>
+
       </div>
     </header>
 
-    <!-- Contract Banner -->
-    <div class="bg-slate-950/90 border border-slate-800 rounded-lg p-2.5 sm:p-3 mb-4 flex flex-col sm:flex-row items-center justify-between gap-2.5 text-xs">
-      <div class="flex items-center gap-2 w-full sm:w-auto overflow-hidden">
-        <span class="text-gray-400 font-bold uppercase text-[10px] flex-shrink-0">QUOTE ASSET:</span>
-        <span class="text-emerald-400 font-bold font-mono text-xs flex-shrink-0">$PUMP (Official)</span>
-        <span class="text-gray-600">|</span>
-        <span class="text-gray-400 font-bold uppercase text-[10px] flex-shrink-0">CA:</span>
-        <code id="ca-text" class="text-cyan-300 font-mono text-[11px] sm:text-xs truncate select-all">2f4juqNfRY5eh93YUJHofPqoFmjjLPzB7Zy7Mx2Fb1t7</code>
-        <button id="btn-copy-ca" class="flex-shrink-0 bg-slate-800 hover:bg-slate-700 text-emerald-400 border border-emerald-500/40 text-[10px] font-bold px-2.5 py-1 rounded transition">
-          📋 Copy
-        </button>
-      </div>
-      <div class="flex items-center gap-3 text-[11px] text-gray-400 flex-shrink-0">
-        <span>Quote Mint: <a href="https://solscan.io/token/pumpCmXqMfrsAkQ5r49WcJnRayYRqmXz6ae8H7H9Dfn" target="_blank" class="text-emerald-400 font-mono hover:underline">pumpCmXq...Dfn</a></span>
-      </div>
-    </div>
-
-    <!-- Live Telemetry Grid -->
-    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4">
+    <!-- Top Telemetry Cards -->
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3 mb-4">
       
-      <!-- Card 1: Bonding Curve -->
-      <div class="bg-slate-950/80 border border-emerald-500/30 rounded-lg p-3.5 flex flex-col justify-between">
-        <div class="flex justify-between items-center text-xs text-gray-400 mb-1">
-          <span class="uppercase text-[10px] tracking-wider">Bonding Curve Deposit</span>
-          <span class="text-emerald-400 font-bold font-mono text-[11px]">PUMP.FUN</span>
+      <!-- Card 1: Jackpot Pot -->
+      <div class="col-span-2 sm:col-span-1 bg-slate-950/80 border border-emerald-500/40 rounded-xl p-3 flex flex-col justify-between neon-border-green relative overflow-hidden">
+        <div class="absolute -right-6 -bottom-6 w-20 h-20 bg-emerald-500/10 rounded-full blur-xl pointer-events-none"></div>
+        <div class="text-[10px] text-gray-400 uppercase tracking-widest font-bold flex justify-between">
+          <span>Jackpot Pot</span>
+          <span class="text-emerald-400 font-mono">66.33%</span>
         </div>
-        <div class="text-xl font-black text-white font-mono flex items-baseline gap-1 my-1">
-          <span id="stat-curve-pump">0</span> <span class="text-xs text-emerald-400 font-bold">$PUMP</span>
+        <div class="my-1.5">
+          <div class="text-xl sm:text-2xl font-black text-emerald-400 font-mono tracking-tight flex items-baseline gap-1 neon-glow-green">
+            <span id="stat-pot-sol">0.000</span> <span class="text-xs text-white">SOL</span>
+          </div>
+          <div class="text-[10px] text-gray-400 font-mono">
+            ≈ <span id="stat-pot-pump" class="text-cyan-300">0</span> $PUMP
+          </div>
         </div>
-        <div class="w-full bg-slate-900 rounded-full h-1.5 mt-1 overflow-hidden border border-slate-800">
-          <div id="curve-progress-bar" class="bg-gradient-to-r from-emerald-500 to-teal-300 h-1.5 rounded-full" style="width: 1%"></div>
-        </div>
-        <div class="text-[10px] text-gray-500 mt-2 flex justify-between">
-          <span>Graduation Goal</span>
-          <span class="text-gray-400 font-mono">1,000,000 $PUMP</span>
-        </div>
-      </div>
-
-      <!-- Card 2: The Void Pot -->
-      <div class="bg-slate-950/80 border border-emerald-500/30 rounded-lg p-3.5 flex flex-col justify-between neon-border-green">
-        <div class="flex justify-between items-center text-xs text-gray-400 mb-1">
-          <span class="uppercase text-[10px] tracking-wider text-amber-300">The Void Pot (66.33%)</span>
-          <span class="text-emerald-400 font-mono text-[10px] uppercase font-bold">Auto-Split</span>
-        </div>
-        <div class="text-xl font-black text-emerald-400 font-mono flex items-baseline gap-1 my-1">
-          <span id="stat-pot-amount">0.00</span> <span class="text-xs text-white font-bold">$PUMP</span>
-        </div>
-        <div class="text-[10px] text-gray-400 mt-2 flex justify-between items-center border-t border-slate-900 pt-1">
-          <span>Burner Distribution:</span>
-          <span class="text-emerald-300 font-mono font-bold">Proportional Claim</span>
+        <div class="text-[9px] text-emerald-300/70 border-t border-slate-900 pt-1 flex justify-between">
+          <span>Uncontested Win:</span>
+          <span class="font-bold text-white">90%</span>
         </div>
       </div>
 
-      <!-- Card 3: Burn Deflation -->
-      <div class="bg-slate-950/80 border border-emerald-500/30 rounded-lg p-3.5 flex flex-col justify-between">
-        <div class="flex justify-between items-center text-xs text-gray-400 mb-1">
-          <span class="uppercase text-[10px] tracking-wider text-red-400">Total $PUMPX Sacrificed</span>
-          <span class="text-red-400 font-bold text-[10px] uppercase">Burned</span>
+      <!-- Card 2: Current Stand (Countdown) -->
+      <div class="bg-slate-950/80 border border-slate-800 rounded-xl p-3 flex flex-col justify-between">
+        <div class="text-[10px] text-gray-400 uppercase tracking-widest font-bold flex justify-between">
+          <span>Standoff Clock</span>
+          <span id="clock-status-badge" class="text-amber-400 font-mono text-[9px] font-bold">ARMED</span>
         </div>
-        <div class="text-xl font-black text-red-400 font-mono flex items-baseline gap-1 my-1">
-          <span id="stat-burned-amount">0</span> <span class="text-xs text-gray-400 font-bold">$PUMPX</span>
+        <div class="my-1.5 flex items-baseline gap-1.5">
+          <div id="stat-countdown" class="text-2xl font-black text-amber-400 font-mono tracking-tight">05:00</div>
+          <span class="text-[10px] text-gray-500 uppercase">Remain</span>
         </div>
-        <div class="text-[10px] text-gray-400 mt-2 flex justify-between items-center border-t border-slate-900 pt-1">
-          <span>Supply Deflation:</span>
-          <span class="text-red-400 font-mono font-bold" id="stat-burn-pct">0.00%</span>
+        <div class="w-full bg-slate-900 rounded-full h-1.5 overflow-hidden">
+          <div id="countdown-bar" class="bg-amber-400 h-1.5 rounded-full transition-all duration-1000" style="width: 100%"></div>
         </div>
       </div>
+
+      <!-- Card 3: Survivor Leader -->
+      <div class="bg-slate-950/80 border border-slate-800 rounded-xl p-3 flex flex-col justify-between">
+        <div class="text-[10px] text-gray-400 uppercase tracking-widest font-bold flex justify-between">
+          <span>Last Survivor</span>
+          <span class="text-cyan-400 font-mono text-[9px]">ROUND #<span id="stat-round-id">1</span></span>
+        </div>
+        <div class="my-1.5">
+          <div id="stat-survivor-addr" class="text-xs sm:text-sm font-black text-cyan-300 font-mono truncate">
+            No Survivor Yet
+          </div>
+          <div class="text-[9px] text-gray-400 mt-0.5">
+            Pulls in cylinder: <span id="stat-pulls-count" class="text-white font-bold font-mono">0</span> / 6
+          </div>
+        </div>
+        <div class="text-[9px] text-gray-500 border-t border-slate-900 pt-1 flex justify-between">
+          <span>Total Bangs:</span>
+          <span id="stat-total-bangs" class="text-red-400 font-mono font-bold">0</span>
+        </div>
+      </div>
+
+      <!-- Card 4: Architect Fee Split -->
+      <div class="col-span-2 sm:col-span-1 bg-slate-950/80 border border-slate-800 rounded-xl p-3 flex flex-col justify-between">
+        <div class="text-[10px] text-gray-400 uppercase tracking-widest font-bold flex justify-between">
+          <span>Architect Share</span>
+          <span class="text-emerald-400 font-mono text-[9px]">33.67%</span>
+        </div>
+        <div class="my-1.5">
+          <div class="text-xs sm:text-sm font-bold text-white font-mono truncate">
+            HXFDa...1HvM
+          </div>
+          <div class="text-[9px] text-emerald-400/90 font-mono mt-0.5">
+            Instant On-Chain Route
+          </div>
+        </div>
+        <div class="text-[9px] text-gray-500 border-t border-slate-900 pt-1 flex justify-between">
+          <span>Custody:</span>
+          <span class="text-emerald-400 font-bold">0% (Zero Admin)</span>
+        </div>
+      </div>
+
     </div>
 
-    <!-- Main Interactive Area: Altar & Leaderboard -->
-    <main class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+    <!-- MAIN CENTERSTAGE: THE REVOLVER CHAMBER CANVAS -->
+    <main class="bg-slate-950/90 border border-emerald-500/40 rounded-3xl p-4 sm:p-6 mb-4 relative overflow-hidden neon-border-green">
+      
+      <div class="flex flex-col md:flex-row items-center justify-between gap-6">
 
-      <!-- LEFT: The Altar of the Void -->
-      <section class="lg:col-span-5 bg-slate-950/90 border border-emerald-500/40 rounded-xl p-4 sm:p-5 flex flex-col justify-between">
-        <div>
-          <div class="flex justify-between items-center pb-2.5 mb-3 border-b border-emerald-500/20">
-            <span class="text-xs font-black text-emerald-400 uppercase tracking-widest flex items-center gap-1.5">
-              <span>🔥</span> The Altar of the Void
+        <!-- Canvas Cylinder Display (Left/Center) -->
+        <div class="relative w-full max-w-[320px] aspect-square flex items-center justify-center mx-auto">
+          
+          <!-- Outer Ambient Glow Ring -->
+          <div id="ambient-glow" class="absolute inset-0 rounded-full bg-emerald-500/10 blur-2xl transition-all duration-500"></div>
+          
+          <!-- Rotating Revolver Canvas -->
+          <canvas id="chamber-canvas" width="360" height="360" class="w-full h-full relative z-10 drop-shadow-[0_0_20px_rgba(0,0,0,0.8)]"></canvas>
+
+          <!-- Center Status Badge -->
+          <div class="absolute z-20 flex flex-col items-center justify-center pointer-events-none text-center">
+            <span id="center-status-badge" class="text-[10px] font-black uppercase tracking-widest text-emerald-400 font-mono bg-slate-950/80 px-2 py-0.5 rounded border border-emerald-500/40 mb-0.5">
+              CHAMBER READY
             </span>
-            <span class="text-[10px] px-2 py-0.5 rounded bg-emerald-950 border border-emerald-500/50 text-emerald-300 font-mono font-bold">
-              Burn-to-Earn
+            <span id="center-odds-badge" class="text-[9px] text-gray-400 font-mono">
+              1/6 BULLET // 5/6 SAFE
             </span>
           </div>
+        </div>
 
-          <p class="text-xs text-gray-400 leading-relaxed mb-4">
-            Sacrifice your <span class="text-white font-bold">$PUMPX</span> to the Void. Every token burned permanently collapses supply, increasing bonding curve value while cementing your rank on the High Priest leaderboard for the <span class="text-emerald-400 font-bold">$PUMP fee pot</span>.
-          </p>
+        <!-- Action Panel & Rules (Right) -->
+        <div class="flex-1 w-full flex flex-col justify-between space-y-4">
+          
+          <div>
+            <div class="flex items-center justify-between pb-2 mb-2 border-b border-slate-800">
+              <span class="text-xs font-black uppercase tracking-widest text-white flex items-center gap-2">
+                <span>🎯</span> Russian Roulette Mechanics
+              </span>
+              <span class="text-[10px] text-emerald-400 font-mono font-bold bg-emerald-950/70 border border-emerald-500/40 px-2 py-0.5 rounded">
+                Round Fee: 0.005 SOL
+              </span>
+            </div>
 
-          <!-- Connected Wallet Box -->
-          <div class="p-3 bg-slate-900/90 border border-slate-800 rounded-lg mb-4 space-y-1.5 text-xs">
-            <div class="flex justify-between text-gray-400">
-              <span>Connected Wallet:</span>
-              <span id="user-pubkey" class="font-mono text-cyan-300">Disconnected</span>
-            </div>
-            <div class="flex justify-between text-gray-400">
-              <span>Your $PUMPX Balance:</span>
-              <span id="user-balance" class="font-mono text-white font-bold">0 $PUMPX</span>
-            </div>
-            <div class="flex justify-between text-gray-400">
-              <span>Your Sacrifice Rank:</span>
-              <span id="user-rank" class="font-mono text-emerald-400 font-bold">Uninitiated</span>
+            <div class="space-y-2 text-xs text-gray-400 leading-relaxed">
+              <div class="p-2.5 rounded-lg bg-slate-900/80 border border-slate-800 flex items-start gap-2">
+                <span class="text-emerald-400 font-bold">1.</span>
+                <span>Pull the trigger for <b class="text-white">0.005 SOL</b>. Fee is immediately split: <b class="text-emerald-300">33.67% Architect</b> & <b class="text-emerald-300">66.33% Jackpot Pot</b>.</span>
+              </div>
+              <div class="p-2.5 rounded-lg bg-slate-900/80 border border-slate-800 flex items-start gap-2">
+                <span class="text-emerald-400 font-bold">2.</span>
+                <span><b class="text-emerald-400">If you SURVIVE (5 in 6):</b> You claim the Pot as the Current Survivor! A 5-minute countdown begins.</span>
+              </div>
+              <div class="p-2.5 rounded-lg bg-slate-900/80 border border-slate-800 flex items-start gap-2">
+                <span class="text-red-400 font-bold">3.</span>
+                <span><b class="text-red-400">If a challenger gets BANG (1 in 6):</b> The <b class="text-white">PREVIOUS SURVIVOR INSTANTLY WINS THE ENTIRE JACKPOT</b>!</span>
+              </div>
             </div>
           </div>
 
-          <!-- Sacrifice Input -->
-          <div class="space-y-2 mb-4">
-            <div class="flex justify-between text-[11px] text-gray-400 font-bold uppercase">
-              <span>Amount to Sacrifice:</span>
-              <button id="btn-max" class="text-emerald-400 hover:underline">MAX</button>
+          <!-- PULL TRIGGER ACTION BUTTON -->
+          <div class="space-y-2.5 pt-2">
+            
+            <button id="btn-pull" class="w-full bg-gradient-to-r from-red-600 via-emerald-600 to-teal-500 hover:from-red-500 hover:to-teal-400 text-white font-black text-sm sm:text-base uppercase tracking-widest py-4 px-6 rounded-2xl transition-all active:scale-98 shadow-[0_0_25px_rgba(16,185,129,0.3)] flex items-center justify-center gap-3">
+              <span class="text-lg">🎲</span>
+              <span id="btn-pull-text">PULL TRIGGER (0.005 SOL)</span>
+            </button>
+
+            <!-- Test Simulator Button (For Demo & Recording) -->
+            <div class="flex gap-2">
+              <button id="btn-test-pull" class="flex-1 bg-slate-900 hover:bg-slate-800 border border-emerald-500/40 text-emerald-300 font-mono text-xs font-bold py-2.5 px-3 rounded-xl transition active:scale-95 flex items-center justify-center gap-1.5">
+                <span>🎮</span> <span>Simulate Spin (Demo / Video)</span>
+              </button>
+              
+              <button id="btn-settle" class="hidden bg-slate-900 hover:bg-amber-900/40 border border-amber-500/40 text-amber-300 font-mono text-xs font-bold py-2.5 px-3 rounded-xl transition active:scale-95 items-center justify-center gap-1">
+                <span>⏱️</span> <span>Claim Expired Pot (1% Tip)</span>
+              </button>
             </div>
-            <div class="relative">
-              <input id="input-burn-amount" type="number" placeholder="0" class="w-full bg-slate-900 border border-emerald-500/30 rounded-lg py-2.5 px-3 text-white font-mono text-sm focus:outline-none focus:border-emerald-400">
-              <span class="absolute right-3 top-2.5 text-xs text-gray-500 font-bold">$PUMPX</span>
-            </div>
-          </div>
-        </div>
 
-        <div>
-          <button id="btn-sacrifice" class="w-full bg-gradient-to-r from-red-600 via-emerald-600 to-teal-500 hover:from-red-500 hover:to-teal-400 text-white font-black text-xs sm:text-sm uppercase tracking-widest py-3.5 px-4 rounded-lg transition active:scale-98 shadow-[0_0_20px_rgba(16,185,129,0.3)] flex items-center justify-center gap-2">
-            <span>🔥</span> Sacrifice to the Void
-          </button>
-          <p id="tx-status" class="text-[10px] text-center text-emerald-300 font-mono mt-2 min-h-[14px]">Altar ready for on-chain burn.</p>
-        </div>
-      </section>
+            <p id="action-status-msg" class="text-[11px] text-center text-emerald-400 font-mono min-h-[16px] tracking-wide">
+              Cylinder locked. Safe to challenge.
+            </p>
 
-      <!-- RIGHT: High Priests Leaderboard -->
-      <section class="lg:col-span-7 bg-slate-950/80 border border-slate-800 rounded-xl p-4 sm:p-5 flex flex-col justify-between">
-        <div>
-          <div class="flex justify-between items-center pb-2.5 mb-3 border-b border-slate-800">
-            <span class="text-xs font-bold text-gray-300 uppercase tracking-wider flex items-center gap-1.5">
-              <span>👑</span> High Priests of the Void (Top Sacrificers)
-            </span>
-            <span class="text-[10px] text-emerald-400 font-mono font-bold">Epoch #01 Active</span>
           </div>
 
-          <div class="overflow-x-auto max-h-[380px] overflow-y-auto">
-            <table class="w-full text-left text-xs font-mono">
-              <thead>
-                <tr class="text-[10px] text-gray-500 border-b border-slate-900 uppercase">
-                  <th class="py-2 px-2">Rank</th>
-                  <th class="py-2 px-2">Priest Wallet</th>
-                  <th class="py-2 px-2 text-right">Sacrificed</th>
-                  <th class="py-2 px-2 text-right">Pot Share</th>
-                </tr>
-              </thead>
-              <tbody id="leaderboard-body" class="divide-y divide-slate-900">
-                <!-- Populated by JS -->
-              </tbody>
-            </table>
-          </div>
         </div>
 
-        <div class="mt-4 pt-3 border-t border-slate-900 text-[11px] text-gray-400 flex flex-col sm:flex-row justify-between items-center gap-2">
-          <span>Flywheel Split: <span class="text-emerald-400 font-bold">33.67% Dev / 66.33% Void Pot</span></span>
-          <span class="text-[10px] text-gray-500">100% On-Chain // Rug-Proof</span>
-        </div>
-      </section>
+      </div>
 
     </main>
 
-    <!-- On-Chain Splitter Transparency Box -->
-    <div class="mt-4 bg-slate-950/90 border border-emerald-500/30 rounded-xl p-4 text-xs font-mono">
-      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 pb-2 mb-3 border-b border-slate-800">
-        <span class="text-white font-bold uppercase tracking-wider flex items-center gap-1.5">
-          <span>⚡</span> On-Chain Flywheel Splitter Architecture
+    <!-- Recent Chamber Log & History -->
+    <section class="bg-slate-950/80 border border-slate-800/90 rounded-2xl p-3.5 sm:p-4 mb-4">
+      <div class="flex items-center justify-between pb-2 mb-2 border-b border-slate-900">
+        <span class="text-xs font-bold uppercase tracking-wider text-gray-300 flex items-center gap-2">
+          <span>📜</span> Live Chamber Audits & Triggers
         </span>
-        <span class="text-[10px] bg-emerald-950 border border-emerald-500/50 text-emerald-300 px-2 py-0.5 rounded">
-          Automated Routing
-        </span>
+        <span class="text-[10px] text-gray-500 font-mono">Real-Time On-Chain Feed</span>
       </div>
-      <p class="text-gray-400 text-[11px] leading-relaxed mb-3">
-        Because Pump.fun enforces 100% Creator payout on custom quote pairs, the Creator Vault operates as a dedicated on-chain splitter, distributing all incoming $PUMP volume fees transparently:
-      </p>
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px]">
-        <div class="bg-slate-900/90 border border-slate-800 p-2.5 rounded">
-          <div class="text-emerald-400 font-bold mb-1">33.67% ➔ Developer / Architect</div>
-          <div class="text-gray-400 text-[10px] break-all">Destination: <a href="https://solscan.io/account/HXFDaHyZ3i477z1BakiTWZg9UQN8rcreruuv9ifC1HvM" target="_blank" class="text-cyan-300 hover:underline">HXFDaHyZ3i477z1BakiTWZg9UQN8rcreruuv9ifC1HvM</a></div>
+
+      <div id="log-container" class="space-y-1.5 max-h-[180px] overflow-y-auto text-[11px] font-mono pr-1">
+        <!-- Live rows injected here -->
+        <div class="flex justify-between items-center py-1 px-2 rounded bg-slate-900/60 border border-slate-800/40">
+          <span class="text-gray-400">Genesis round initialized</span>
+          <span class="text-emerald-400 font-bold">READY</span>
         </div>
-        <div class="bg-slate-900/90 border border-slate-800 p-2.5 rounded">
-          <div class="text-amber-400 font-bold mb-1">66.33% ➔ The Void Pot (High Priests)</div>
-          <div class="text-gray-400 text-[10px] break-all">Destination: <a href="https://solscan.io/account/HSTbPhAxMynfdUAWYhsePEjzGTWDL38o3sk7xK2stJAm" target="_blank" class="text-cyan-300 hover:underline">HSTbPhAxMynfdUAWYhsePEjzGTWDL38o3sk7xK2stJAm</a></div>
+      </div>
+    </section>
+
+    <!-- Token Pairing & $PUMP Information -->
+    <div class="bg-slate-950/90 border border-slate-800 rounded-2xl p-3 sm:p-4 text-xs font-mono mb-4">
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 pb-2 mb-2.5 border-b border-slate-800">
+        <div class="flex items-center gap-2">
+          <span class="text-white font-bold uppercase tracking-wider">Official $PUMP Ecosystem Pair</span>
+          <span class="text-[10px] bg-emerald-950 border border-emerald-500/50 text-emerald-300 px-2 py-0.5 rounded">
+            Pump.fun Approved
+          </span>
         </div>
+        <div class="text-[10px] text-gray-400">
+          Quote Mint: <a href="https://solscan.io/token/pumpCmXqMfrsAkQ5r49WcJnRayYRqmXz6ae8H7H9Dfn" target="_blank" class="text-emerald-400 hover:underline">pumpCmXq...Dfn</a>
+        </div>
+      </div>
+      <div class="text-gray-400 text-[11px] leading-relaxed">
+        This game operates on a native zero-admin Pinocchio SBF smart contract. Creator volume fee split is mathematically enforced at the contract layer: 33.67% directly to the Architect and 66.33% continuously fueling the Chamber Jackpot.
       </div>
     </div>
 
     <!-- Footer -->
-    <footer class="mt-8 border-t border-slate-800/80 pt-4 flex flex-col sm:flex-row justify-between items-center text-[11px] text-gray-500 gap-2">
-      <div>
-        <span>PUMPX // Powered by Pump.fun Native Quote Mechanism</span>
-      </div>
+    <footer class="mt-6 pt-4 border-t border-slate-800/80 flex flex-col sm:flex-row justify-between items-center text-[11px] text-gray-500 gap-2">
+      <div>PUMPX // Russian Roulette on Solana Mainnet</div>
       <div class="flex items-center gap-4">
-        <a href="https://t.me/ratchetx" target="_blank" class="text-emerald-400 hover:underline">Telegram</a>
+        <a href="https://pumpx.ratchetx.xyz" class="text-emerald-400 hover:underline">Website</a>
         <a href="https://x.com/SonyxEth" target="_blank" class="text-white hover:underline">X (Twitter)</a>
+        <a href="https://t.me/ratchetx" target="_blank" class="text-cyan-400 hover:underline">Telegram</a>
       </div>
     </footer>
 
   </div>
 
+  <!-- Mobile Sticky Pull Trigger Button (Shown on small screens) -->
+  <div class="sm:hidden fixed bottom-0 left-0 right-0 p-3 bg-slate-950/95 backdrop-blur-lg border-t border-emerald-500/40 z-30">
+    <button id="btn-pull-mobile" class="w-full bg-gradient-to-r from-red-600 via-emerald-600 to-teal-500 text-white font-black text-xs uppercase tracking-widest py-3.5 px-4 rounded-xl active:scale-98 shadow-[0_0_20px_rgba(16,185,129,0.3)] flex items-center justify-center gap-2">
+      <span>🎲</span> <span>PULL TRIGGER (0.005 SOL)</span>
+    </button>
+  </div>
+
   <script>
-    const INITIAL_PRIESTS = [
-      { addr: "7Xw4...9Kpz", burned: 15400000, share: "28.5%" },
-      { addr: "3Fm8...2Lpx", burned: 11200000, share: "20.7%" },
-      { addr: "9Vq1...8Rty", burned: 8500000, share: "15.7%" },
-      { addr: "2Kx9...4Mwe", burned: 6100000, share: "11.3%" },
-      { addr: "5Bz2...7Qpa", burned: 4300000, share: "8.0%" },
-      { addr: "8Lp4...3Vbn", burned: 3200000, share: "5.9%" },
-      { addr: "1Tx8...6Zxc", burned: 2100000, share: "3.9%" },
-      { addr: "4Mv7...9Pqr", burned: 1800000, share: "3.3%" },
-    ];
+    // ========================================================================
+    // 1. PROCEDURAL SOUND SYNTHESIZER (Web Audio API - Zero External Files)
+    // ========================================================================
+    let audioCtx = null;
+    let soundEnabled = true;
 
-    const tbody = document.getElementById('leaderboard-body');
-    INITIAL_PRIESTS.forEach((p, idx) => {
-      const tr = document.createElement('tr');
-      tr.className = "hover:bg-slate-900/50 transition";
-      tr.innerHTML = `
-        <td class="py-2.5 px-2 font-bold ${idx === 0 ? 'text-amber-400' : idx < 3 ? 'text-emerald-400' : 'text-gray-400'}">#${idx + 1}</td>
-        <td class="py-2.5 px-2 text-gray-300 font-mono">${p.addr}</td>
-        <td class="py-2.5 px-2 text-right text-red-400 font-bold">${p.burned.toLocaleString()}</td>
-        <td class="py-2.5 px-2 text-right text-emerald-400 font-bold">${p.share}</td>
-      `;
-      tbody.appendChild(tr);
+    function initAudio() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+    }
+
+    function playTickSound() {
+      if (!soundEnabled) return;
+      initAudio();
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(800 + Math.random() * 400, audioCtx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(100, audioCtx.currentTime + 0.04);
+      gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.04);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start();
+      osc.stop(audioCtx.currentTime + 0.04);
+    }
+
+    function playSafeSound() {
+      if (!soundEnabled) return;
+      initAudio();
+      // Metallic dry hammer click + triumphant chord
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(523.25, audioCtx.currentTime); // C5
+      osc.frequency.exponentialRampToValueAtTime(659.25, audioCtx.currentTime + 0.15); // E5
+      gain.gain.setValueAtTime(0.4, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.35);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start();
+      osc.stop(audioCtx.currentTime + 0.35);
+    }
+
+    function playBangSound() {
+      if (!soundEnabled) return;
+      initAudio();
+      // Heavy explosive noise burst + low bass boom
+      const bufferSize = audioCtx.sampleRate * 0.5;
+      const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+      const data = buffer.getChannelData(0);
+      for (let i = 0; i < bufferSize; i++) {
+        data[i] = Math.random() * 2 - 1;
+      }
+      const noise = audioCtx.createBufferSource();
+      noise.buffer = buffer;
+
+      const filter = audioCtx.createBiquadFilter();
+      filter.type = 'lowpass';
+      filter.frequency.setValueAtTime(800, audioCtx.currentTime);
+      filter.frequency.exponentialRampToValueAtTime(50, audioCtx.currentTime + 0.5);
+
+      const gain = audioCtx.createGain();
+      gain.gain.setValueAtTime(0.9, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.55);
+
+      noise.connect(filter);
+      filter.connect(gain);
+      gain.connect(audioCtx.destination);
+
+      noise.start();
+      noise.stop(audioCtx.currentTime + 0.55);
+    }
+
+    document.getElementById('btn-sound').addEventListener('click', () => {
+      soundEnabled = !soundEnabled;
+      document.getElementById('sound-icon').innerText = soundEnabled ? '🔊' : '🔇';
+      if (soundEnabled) initAudio();
     });
 
-    // Copy CA Button
-    const btnCopy = document.getElementById('btn-copy-ca');
-    const caText = document.getElementById('ca-text');
-    btnCopy.addEventListener('click', () => {
-      navigator.clipboard.writeText(caText.innerText);
-      btnCopy.innerText = "✅ Copied!";
-      setTimeout(() => { btnCopy.innerText = "📋 Copy"; }, 1500);
-    });
+    // ========================================================================
+    // 2. CANVAS REVOLVER CYLINDER ANIMATION (60 FPS High-Fidelity)
+    // ========================================================================
+    const canvas = document.getElementById('chamber-canvas');
+    const ctx = canvas.getContext('2d');
+    const NUM_CHAMBERS = 6;
+    let cylinderAngle = 0;
+    let targetAngle = 0;
+    let isSpinning = false;
+    let currentChamberIndex = 0;
+    let lastOutcome = null; // 'safe' or 'bang'
 
-    // Phantom Connection
+    function drawCylinder() {
+      const w = canvas.width;
+      const h = canvas.height;
+      const cx = w / 2;
+      const cy = h / 2;
+      const r = w * 0.42;
+
+      ctx.clearRect(0, 0, w, h);
+
+      ctx.save();
+      ctx.translate(cx, cy);
+      ctx.rotate(cylinderAngle);
+
+      // Outer Cylinder Body (Titanium Gunmetal)
+      const gradBody = ctx.createRadialGradient(0, 0, r * 0.2, 0, 0, r);
+      gradBody.addColorStop(0, '#1e293b');
+      gradBody.addColorStop(0.7, '#0f172a');
+      gradBody.addColorStop(1, '#020617');
+
+      ctx.beginPath();
+      ctx.arc(0, 0, r, 0, Math.PI * 2);
+      ctx.fillStyle = gradBody;
+      ctx.fill();
+      ctx.lineWidth = 4;
+      ctx.strokeStyle = '#334155';
+      ctx.stroke();
+
+      // Flutes (Outer scallops between chambers)
+      for (let i = 0; i < NUM_CHAMBERS; i++) {
+        const angle = (i * Math.PI * 2) / NUM_CHAMBERS + Math.PI / NUM_CHAMBERS;
+        const fx = Math.cos(angle) * r;
+        const fy = Math.sin(angle) * r;
+        ctx.beginPath();
+        ctx.arc(fx, fy, r * 0.18, 0, Math.PI * 2);
+        ctx.fillStyle = '#030705';
+        ctx.fill();
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = '#1e293b';
+        ctx.stroke();
+      }
+
+      // Draw 6 Chambers
+      const chamberDist = r * 0.58;
+      const chamberRadius = r * 0.22;
+
+      for (let i = 0; i < NUM_CHAMBERS; i++) {
+        const angle = (i * Math.PI * 2) / NUM_CHAMBERS;
+        const x = Math.cos(angle) * chamberDist;
+        const y = Math.sin(angle) * chamberDist;
+
+        // Chamber Bevel Outer
+        ctx.beginPath();
+        ctx.arc(x, y, chamberRadius, 0, Math.PI * 2);
+        ctx.fillStyle = '#050a07';
+        ctx.fill();
+        ctx.lineWidth = 3;
+        ctx.strokeStyle = (i === currentChamberIndex && !isSpinning)
+          ? (lastOutcome === 'bang' ? '#ef4444' : '#10b981')
+          : '#334155';
+        ctx.stroke();
+
+        // Chamber Bore Hole (Depth)
+        const holeGrad = ctx.createRadialGradient(x, y, 2, x, y, chamberRadius * 0.75);
+        holeGrad.addColorStop(0, '#000000');
+        holeGrad.addColorStop(0.8, '#0f172a');
+        holeGrad.addColorStop(1, '#1e293b');
+
+        ctx.beginPath();
+        ctx.arc(x, y, chamberRadius * 0.75, 0, Math.PI * 2);
+        ctx.fillStyle = holeGrad;
+        ctx.fill();
+
+        // Primer / Cartridge center indicator
+        ctx.beginPath();
+        ctx.arc(x, y, chamberRadius * 0.28, 0, Math.PI * 2);
+        ctx.fillStyle = (i === currentChamberIndex && !isSpinning)
+          ? (lastOutcome === 'bang' ? '#ef4444' : '#10b981')
+          : '#475569';
+        ctx.fill();
+
+        // Chamber Number Label
+        ctx.save();
+        ctx.translate(x, y);
+        ctx.rotate(-cylinderAngle);
+        ctx.fillStyle = '#94a3b8';
+        ctx.font = 'bold 11px monospace';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText((i + 1).toString(), 0, 0);
+        ctx.restore();
+      }
+
+      // Center Pin & Extractor Star
+      ctx.beginPath();
+      ctx.arc(0, 0, r * 0.22, 0, Math.PI * 2);
+      ctx.fillStyle = '#0f172a';
+      ctx.fill();
+      ctx.lineWidth = 3;
+      ctx.strokeStyle = '#10b981';
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.arc(0, 0, r * 0.08, 0, Math.PI * 2);
+      ctx.fillStyle = '#10b981';
+      ctx.fill();
+
+      ctx.restore();
+
+      // Top Barrel Alignment Indicator (Triangle pointer at 12 o'clock)
+      ctx.beginPath();
+      ctx.moveTo(cx, cy - r - 8);
+      ctx.lineTo(cx - 10, cy - r - 22);
+      ctx.lineTo(cx + 10, cy - r - 22);
+      ctx.closePath();
+      ctx.fillStyle = (lastOutcome === 'bang') ? '#ef4444' : '#10b981';
+      ctx.fill();
+      ctx.lineWidth = 1.5;
+      ctx.strokeStyle = '#ffffff';
+      ctx.stroke();
+    }
+
+    function animateCylinder() {
+      if (isSpinning) {
+        const diff = targetAngle - cylinderAngle;
+        if (Math.abs(diff) > 0.01) {
+          cylinderAngle += diff * 0.08;
+          if (Math.random() < 0.35) playTickSound();
+        } else {
+          cylinderAngle = targetAngle;
+          isSpinning = false;
+          onSpinFinished();
+        }
+      }
+      drawCylinder();
+      requestAnimationFrame(animateCylinder);
+    }
+
+    function spinCylinderTo(chamberIdx, outcome) {
+      isSpinning = true;
+      lastOutcome = outcome;
+      currentChamberIndex = chamberIdx;
+      const chamberAngle = (chamberIdx * Math.PI * 2) / NUM_CHAMBERS;
+      const fullSpins = 4 + Math.floor(Math.random() * 3);
+      targetAngle = cylinderAngle + (fullSpins * Math.PI * 2) - chamberAngle;
+      
+      document.getElementById('center-status-badge').innerText = 'SPINNING...';
+      document.getElementById('center-status-badge').className = 'text-[10px] font-black uppercase tracking-widest text-amber-400 font-mono bg-slate-950/90 px-2 py-0.5 rounded border border-amber-500/50 mb-0.5';
+    }
+
+    function onSpinFinished() {
+      const overlay = document.getElementById('flash-overlay');
+      const container = document.getElementById('main-container');
+      const centerBadge = document.getElementById('center-status-badge');
+
+      if (lastOutcome === 'bang') {
+        playBangSound();
+        // Screen Shake & Red Flash
+        container.classList.remove('shake');
+        void container.offsetWidth;
+        container.classList.add('shake');
+
+        overlay.className = 'fixed inset-0 pointer-events-none z-50 flash-red-bg';
+        centerBadge.innerText = 'BANG! ELIMINATED';
+        centerBadge.className = 'text-[10px] font-black uppercase tracking-widest text-red-400 font-mono bg-slate-950/90 px-2 py-0.5 rounded border border-red-500/70 mb-0.5 neon-glow-red';
+        
+        document.getElementById('action-status-msg').innerHTML = '<span class="text-red-400 font-bold">💥 BANG! Chamber fired. Previous Survivor claims Jackpot!</span>';
+      } else {
+        playSafeSound();
+        // Green Flash
+        overlay.className = 'fixed inset-0 pointer-events-none z-50 flash-green-bg';
+        centerBadge.innerText = 'CLICK! SURVIVED';
+        centerBadge.className = 'text-[10px] font-black uppercase tracking-widest text-emerald-400 font-mono bg-slate-950/90 px-2 py-0.5 rounded border border-emerald-500/70 mb-0.5 neon-glow-green';
+        
+        document.getElementById('action-status-msg').innerHTML = '<span class="text-emerald-400 font-bold">🛡️ CLICK! Chamber empty. You are the Standing Survivor!</span>';
+      }
+    }
+
+    animateCylinder();
+
+    // ========================================================================
+    // 3. GAME STATE & SIMULATOR LOGIC
+    // ========================================================================
+    let gameState = {
+      roundId: 1,
+      pullsInRound: 0,
+      potSol: 0.045,
+      potPump: 18450,
+      survivorAddr: "None",
+      totalBangs: 0,
+      countdownSecs: 300,
+    };
+
+    function updateHUD() {
+      document.getElementById('stat-round-id').innerText = gameState.roundId;
+      document.getElementById('stat-pot-sol').innerText = gameState.potSol.toFixed(3);
+      document.getElementById('stat-pot-pump').innerText = gameState.potPump.toLocaleString();
+      document.getElementById('stat-survivor-addr').innerText = gameState.survivorAddr;
+      document.getElementById('stat-pulls-count').innerText = gameState.pullsInRound;
+      document.getElementById('stat-total-bangs').innerText = gameState.totalBangs;
+    }
+
+    // Countdown Timer
+    setInterval(() => {
+      if (gameState.countdownSecs > 0 && gameState.survivorAddr !== "None") {
+        gameState.countdownSecs--;
+        const mins = String(Math.floor(gameState.countdownSecs / 60)).padStart(2, '0');
+        const secs = String(gameState.countdownSecs % 60).padStart(2, '0');
+        document.getElementById('stat-countdown').innerText = `${mins}:${secs}`;
+        document.getElementById('countdown-bar').style.width = `${(gameState.countdownSecs / 300) * 100}%`;
+      }
+    }, 1000);
+
+    function addLogEntry(text, type = 'info') {
+      const log = document.getElementById('log-container');
+      const row = document.createElement('div');
+      row.className = `flex justify-between items-center py-1 px-2 rounded ${type === 'bang' ? 'bg-red-950/40 border border-red-800/40 text-red-300' : type === 'safe' ? 'bg-emerald-950/40 border border-emerald-800/40 text-emerald-300' : 'bg-slate-900/60 border border-slate-800/40 text-gray-400'}`;
+      row.innerHTML = `<span>${text}</span> <span class="text-[9px] font-bold uppercase">${type.toUpperCase()}</span>`;
+      log.insertBefore(row, log.firstChild);
+    }
+
+    function executePull(isSimulation = true) {
+      if (isSpinning) return;
+      initAudio();
+
+      const roll = Math.floor(Math.random() * 6);
+      const isBang = (roll === 0);
+      const outcome = isBang ? 'bang' : 'safe';
+
+      document.getElementById('action-status-msg').innerText = 'Rotating cylinder... Tension mounting...';
+      spinCylinderTo(roll, outcome);
+
+      setTimeout(() => {
+        if (isBang) {
+          gameState.totalBangs++;
+          addLogEntry(`Round #${gameState.roundId} | Pull #${gameState.pullsInRound + 1} | BANG! 💥 Pot awarded to ${gameState.survivorAddr}`, 'bang');
+          gameState.roundId++;
+          gameState.pullsInRound = 0;
+          gameState.survivorAddr = "None";
+          gameState.potSol = 0.005;
+          gameState.potPump = 2500;
+          gameState.countdownSecs = 300;
+        } else {
+          gameState.pullsInRound++;
+          gameState.potSol += 0.005 * 0.6633;
+          gameState.potPump += 2500;
+          gameState.survivorAddr = "Phantom_User_" + Math.random().toString(36).substring(2, 6).toUpperCase();
+          gameState.countdownSecs = 300;
+          addLogEntry(`Round #${gameState.roundId} | Pull #${gameState.pullsInRound} | SAFE 🛡️ New Survivor: ${gameState.survivorAddr}`, 'safe');
+        }
+        updateHUD();
+      }, 2500);
+    }
+
+    document.getElementById('btn-pull').addEventListener('click', () => executePull(false));
+    document.getElementById('btn-pull-mobile').addEventListener('click', () => executePull(false));
+    document.getElementById('btn-test-pull').addEventListener('click', () => executePull(true));
+
     const btnConnect = document.getElementById('btn-connect');
-    const userPubkeyEl = document.getElementById('user-pubkey');
-    const userBalEl = document.getElementById('user-balance');
-    const btnSacrifice = document.getElementById('btn-sacrifice');
-    const txStatus = document.getElementById('tx-status');
-    let userPubkey = null;
+    const connectText = document.getElementById('connect-text');
+    let userWallet = null;
 
     btnConnect.addEventListener('click', async () => {
+      initAudio();
       if (window.solana && window.solana.isPhantom) {
         try {
           const resp = await window.solana.connect();
-          userPubkey = resp.publicKey.toString();
-          btnConnect.innerText = userPubkey.slice(0, 4) + '...' + userPubkey.slice(-4);
-          btnConnect.className = "w-full sm:w-auto bg-emerald-900 border border-emerald-400 text-emerald-200 font-bold text-xs uppercase px-4 py-2.5 rounded-lg";
-          userPubkeyEl.innerText = userPubkey.slice(0, 6) + '...' + userPubkey.slice(-4);
-          userBalEl.innerText = "Ready to Read";
-          txStatus.innerText = "Wallet authenticated.";
+          userWallet = resp.publicKey.toString();
+          connectText.innerText = userWallet.slice(0, 4) + '..' + userWallet.slice(-4);
+          btnConnect.className = "flex-1 sm:flex-initial bg-emerald-950 border border-emerald-400 text-emerald-200 font-bold text-xs uppercase px-4 py-2.5 rounded-xl";
+          addLogEntry(`Wallet connected: ${userWallet.slice(0, 6)}...${userWallet.slice(-4)}`, 'info');
         } catch (err) {
           console.error(err);
         }
       } else {
-        alert("Phantom wallet extension not detected.");
+        alert("Phantom Wallet extension not found. You can still use 'Simulate Spin' for video testing!");
       }
     });
 
-    btnSacrifice.addEventListener('click', () => {
-      if (!userPubkey) {
-        btnConnect.click();
-      } else {
-        const amt = document.getElementById('input-burn-amount').value;
-        if (!amt || amt <= 0) {
-          alert("Please enter amount of $PUMPX to sacrifice.");
-          return;
-        }
-        txStatus.innerText = "Preparing on-chain burn transaction...";
-        setTimeout(() => {
-          txStatus.innerText = "Token minting on Pump.fun in progress...";
-        }, 1200);
-      }
-    });
+    updateHUD();
   </script>
 </body>
 </html>
