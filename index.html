@@ -6,7 +6,10 @@
   <title>PUMPX // Russian Roulette | Chamber of Fate</title>
   <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@solana/web3.js@1.98.0/lib/index.iife.min.js"></script>
-  <script src="minisol.js"></script>
+  <script src="minisol.js?v=3"></script>
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
   <style>
     * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
     body {
@@ -841,7 +844,15 @@
 
       const provider = window.solana || (window.solflare && window.solflare.isSolflare ? window.solflare : null);
       if (!provider) {
-        alert("Solana wallet extension not detected. Use 'Simulate Spin' for video testing, or open in a Web3 browser (Phantom/Solflare)!");
+        const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+        if (isMobile) {
+          const phantomUrl = "https://phantom.app/ul/browse/" + encodeURIComponent(window.location.href);
+          if (confirm("Solana wallet not detected in this browser.\n\nOpen directly inside Phantom Wallet app?")) {
+            window.location.href = phantomUrl;
+            return;
+          }
+        }
+        alert("Solana wallet extension (Phantom/Solflare) not detected. Use 'Simulate Spin' for video testing, or open inside Phantom Wallet app!");
         return;
       }
 
@@ -1024,6 +1035,14 @@
           console.error(err);
         }
       } else {
+        const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+        if (isMobile) {
+          const phantomUrl = "https://phantom.app/ul/browse/" + encodeURIComponent(window.location.href);
+          if (confirm("Solana wallet not detected in this mobile browser.\n\nOpen directly inside Phantom Wallet app?")) {
+            window.location.href = phantomUrl;
+            return;
+          }
+        }
         alert("Solana wallet extension (Phantom/Solflare) not found. Use 'Simulate Spin' for video testing!");
       }
     });
